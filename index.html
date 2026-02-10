@@ -1,1 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Number Plate Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#f2f6fb;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* HEADER - Responsive */
+header {
+  background:#0b3c6d;
+  color:white;
+  padding:15px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  box-sizing: border-box;
+}
+header img { 
+  height:45px;
+}
+header h2 { 
+  margin:0; 
+  font-size:18px;
+}
+header p { 
+  margin:2px 0 0 0; 
+  font-size:12px; 
+  opacity:0.8;
+}
+
+/* NAV */
+nav {
+  background:#003366;
+  padding:10px 5px;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+
+nav a {
+  color:white;
+  padding: 5px 12px;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:14px;
+}
+
+/* CONTAINER */
+.container {
+  width: 92%;
+  max-width:1000px;
+  margin:20px auto;
+  background:white;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 0 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+/* HOME SERVICES - Responsive Grid */
+.row {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap:15px;
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.service-card {
+  border:1px solid rgba(0,0,0,0.05);
+  border-radius:8px;
+  padding:20px;
+  text-align:center;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+}
+.service-card:active { transform: scale(0.98); }
+
+.service-card h3 {
+  font-size:16px;
+  margin-bottom:15px;
+  font-weight: bold;
+}
+
+/* Color Scheme */
+.card-hsrp { background-color: #FDE58A; color: #333; }
+.card-sticker { background-color: #FDE58A; color: #333; }
+.card-replacement { background-color: #2F4D97; color: white; }
+.card-replacement h3 { color: white; }
+.card-electric { background-color: #00FF00; color: #333; }
+.card-tractor { background-color: #2F4D97; color: white; }
+.card-tractor h3 { color: white; }
+.card-grievance { background-color: #3C4555; color: white; }
+.card-grievance h3 { color: white; }
+
+/* FORM STYLING */
+.step-title {
+  background:#e3ecff;
+  padding:12px;
+  font-weight:bold;
+  border-left:6px solid #0b3c6d;
+  margin-bottom:20px;
+  font-size: 15px;
+}
+
+label {
+  font-weight:bold;
+  margin-top:15px;
+  display:block;
+  font-size: 14px;
+  color: #333;
+}
+
+input, select, textarea {
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #0b3c6d;
+  outline: none;
+  box-shadow: 0 0 5px rgba(11,60,109,0.2);
+}
+
+.error-field {
+  border: 2px solid #dc3545 !important;
+  background-color: #fff8f8;
+}
+
+button {
+  background:#0b3c6d;
+  color:white;
+  padding:14px;
+  border:none;
+  border-radius:6px;
+  width:100%;
+  font-size:16px;
+  font-weight: bold;
+  margin-top:25px;
+  cursor:pointer;
+}
+
+.service-card button {
+  background: rgba(0,0,0,0.8);
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* PROGRESS BAR */
+.progress {
+  width:100%;
+  background:#eee;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:20px;
+  height: 8px;
+}
+.progress-bar {
+  height:100%;
+  width:0%;
+  background:#0b3c6d;
+  transition:0.5s ease;
+}
+
+/* FOOTER */
+footer {
+  text-align:center;
+  padding:20px 15px;
+  font-size:12px;
+  line-height: 1.8;
+  background:#e9edf2;
+  color: #666;
+}
+
+#step1, #step2, #step3, #thankyouPage, #bookingBox {
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048313.png'">
+  <div>
+    <h2>Number Plate Service</h2>
+    <p>Secure Online Portal</p>
+  </div>
+</header>
+
+<nav>
+  <a href="#" onclick="showHome()">Home</a>
+  <a href="#">Track Order</a>
+  <a href="#">FAQs</a>
+  <a href="#">About</a>
+  <a href="#">Contact Us</a>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="container" id="homePage">
+  <h2 style="text-align:center; margin-top:0; color:#0b3c6d; margin-bottom:25px;">HSRP Online Services</h2>
+
+  <div class="row">
+    <div class="service-card card-hsrp">
+      <h3>HSRP with Colour Sticker</h3>
+      <button onclick="startBooking()">Book Now</button>
+    </div>
+
+    <div class="service-card card-replacement">
+      <h3>Replacement Plate</h3>
+      <button onclick="startBooking()">Book Now</button>
+    </div>
+
+    <div class="service-card card-sticker">
+      <h3>Only Colour Sticker</h3>
+      <button onclick="startBooking()">Book Now</button>
+    </div>
+
+    <div class="service-card card-electric">
+      <h3>Plate For Electric Vehicle</h3>
+      <button onclick="startBooking()">Book Now</button>
+    </div>
+
+    <div class="service-card card-tractor">
+      <h3>Plate For Tractor & Trailer</h3>
+      <button onclick="startBooking()">Book Now</button>
+    </div>
+
+    <div class="service-card card-grievance">
+      <h3>Grievance Redressal</h3>
+      <button onclick="startBooking()">Enquiry</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING CONTAINER -->
+<div class="container" id="bookingBox">
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="step-title">Vehicle Information</div>
+    <label>State *</label>
+    <select id="state" class="v-field">
+      <option value="">Select State / UT</option>
+      <option value="AN">Andaman and Nicobar Islands</option>
+      <option value="AP">Andhra Pradesh</option>
+      <option value="AR">Arunachal Pradesh</option>
+      <option value="AS">Assam</option>
+      <option value="BR">Bihar</option>
+      <option value="CH">Chandigarh</option>
+      <option value="CG">Chhattisgarh</option>
+      <option value="DN">Dadra and Nagar Haveli and Daman and Diu</option>
+      <option value="DL">Delhi</option>
+      <option value="GA">Goa</option>
+      <option value="GJ">Gujarat</option>
+      <option value="HR">Haryana</option>
+      <option value="HP">Himachal Pradesh</option>
+      <option value="JK">Jammu and Kashmir</option>
+      <option value="JH">Jharkhand</option>
+      <option value="KA">Karnataka</option>
+      <option value="KL">Kerala</option>
+      <option value="LA">Ladakh</option>
+      <option value="LD">Lakshadweep</option>
+      <option value="MP">Madhya Pradesh</option>
+      <option value="MH">Maharashtra</option>
+      <option value="MN">Manipur</option>
+      <option value="ML">Meghalaya</option>
+      <option value="MZ">Mizoram</option>
+      <option value="NL">Nagaland</option>
+      <option value="OR">Odisha</option>
+      <option value="PY">Puducherry</option>
+      <option value="PB">Punjab</option>
+      <option value="RJ">Rajasthan</option>
+      <option value="SK">Sikkim</option>
+      <option value="TN">Tamil Nadu</option>
+      <option value="TS">Telangana</option>
+      <option value="TR">Tripura</option>
+      <option value="UP">Uttar Pradesh</option>
+      <option value="UK">Uttarakhand</option>
+      <option value="WB">West Bengal</option>
+    </select>
+
+    <label>Vehicle Type *</label>
+    <select id="vehicleType" class="v-field">
+      <option value="">Select Vehicle</option>
+      <option>Two Wheeler</option>
+      <option>Four Wheeler</option>
+      <option>Commercial</option>
+    </select>
+
+    <label>Registration Number *</label>
+    <input type="text" id="regNo" class="v-field" placeholder="DL 01 AB 1234">
+
+    <label>Chassis Number (Last 5 Digits) *</label>
+    <input type="text" id="chassis" class="v-field" maxlength="5" placeholder="Enter last 5 digits">
+
+    <label>Engine Number (Last 5 Digits) *</label>
+    <input type="text" id="engine" class="v-field" maxlength="5" placeholder="Enter last 5 digits">
+
+    <button onclick="goStep2()">Next Step</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2">
+    <div class="step-title">Personal Details</div>
+    <label>Full Name *</label>
+    <input type="text" id="name" class="p-field" placeholder="Owner's Name">
+    <label>Mobile Number *</label>
+    <input type="tel" id="mobile" class="p-field" maxlength="10" placeholder="10 Digit Mobile No.">
+    <label>Email ID *</label>
+    <input type="email" id="email" class="p-field" placeholder="Email Address">
+    <label>Delivery Address *</label>
+    <textarea id="address" class="p-field" rows="3" placeholder="Full Address with Pincode"></textarea>
+    <button onclick="goStep3()">Next: Payment</button>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3">
+    <div class="step-title">Payment & Confirmation</div>
+    <p style="font-size: 14px; text-align:center; color: #333; margin-bottom: 10px;">Scan QR Code to pay</p>
+    
+    <div style="text-align:center; margin-bottom: 20px;">
+      <!-- GitHub image link -->
+      <img src="qr.png" alt="Payment QR" style="width:220px; border:1px solid #ddd; padding:5px; background: white;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Please_Upload_qr.png_To_GitHub';">
+    </div>
+
+    <label>Upload Payment Screenshot (After Payment) *</label>
+    <input type="file" id="screenshot" accept="image/*" style="padding: 8px;">
+    <button onclick="showThankYou()">Confirm Booking</button>
+  </div>
+
+  <!-- THANK YOU -->
+  <div id="thankyouPage">
+    <div style="text-align:center; padding:20px;">
+      <h2 style="color:green; font-size: 28px; margin-bottom: 10px;">✅ Booking Successful!</h2>
+      <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Your application has been received successfully.</p>
+      
+      <div style="background:#f9f9f9; padding:20px; border-radius:8px; margin:15px 0; border: 1px solid #eee;">
+        <strong style="color: #666; font-size: 14px;">BOOKING REFERENCE ID</strong> <br>
+        <span id="bookingId" style="color:#0b3c6d; font-size:24px; font-weight: bold; letter-spacing:1px;"></span>
+      </div>
+      
+      <div style="background: #e7f3ff; color: #0b3c6d; padding: 15px; border-radius: 6px; font-weight: bold; margin-top: 20px;">
+        HSRP plate will be delivered within 8-10 working days.
+      </div>
+      
+      <button onclick="location.reload()" style="background:#f0f0f0; color:#333; margin-top:25px; border: 1px solid #ccc; font-size: 14px;">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  FAQ | Disclaimer | Privacy Policy | Terms & Conditions
+  <br>© 2026 Number Plate Service Portal
+</footer>
+
+<script>
+const progressBar = document.getElementById("progressBar");
+const homePage = document.getElementById("homePage");
+const bookingBox = document.getElementById("bookingBox");
+
+function updateProgress(p){ progressBar.style.width=p+"%"; }
+
+function showHome(){
+ homePage.style.display="block";
+ bookingBox.style.display="none";
+}
+
+function startBooking(){
+ window.scrollTo(0,0);
+ homePage.style.display="none";
+ bookingBox.style.display="block";
+ step1.style.display="block";
+ updateProgress(33);
+}
+
+function validateFields(className) {
+  let fields = document.getElementsByClassName(className);
+  let isValid = true;
+  for (let f of fields) {
+    if (f.value.trim() === "") {
+      f.classList.add("error-field");
+      isValid = false;
+    } else {
+      f.classList.remove("error-field");
+    }
+  }
+  return isValid;
+}
+
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    if(el.value.trim() !== "") el.classList.remove('error-field');
+  });
+});
+
+function goStep2(){
+  if(!validateFields("v-field")) return;
+  if(chassis.value.length < 5 || engine.value.length < 5){
+    if(chassis.value.length < 5) chassis.classList.add("error-field");
+    if(engine.value.length < 5) engine.classList.add("error-field");
+    alert("Chassis aur Engine ke 5 digit zaruri hain!");
+    return;
+  }
+  window.scrollTo(0,0);
+  step1.style.display="none";
+  step2.style.display="block";
+  updateProgress(66);
+}
+
+function goStep3(){
+  if(!validateFields("p-field")) return;
+  window.scrollTo(0,0);
+  step2.style.display="none";
+  step3.style.display="block";
+  updateProgress(85);
+}
+
+function showThankYou(){
+ if(screenshot.files.length===0){
+  screenshot.classList.add("error-field");
+  alert("Payment screenshot upload karein!");
+  return;
+ }
+ let booking="HSRP"+Math.floor(100000+Math.random()*900000);
+ document.getElementById("bookingId").innerText=booking;
+ window.scrollTo(0,0);
+ step3.style.display="none";
+ thankyouPage.style.display="block";
+ updateProgress(100);
+}
+</script>
+
+</body>
+</html>
