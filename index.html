@@ -22,7 +22,7 @@
 
         /* NAV */
         nav { background:#003366; padding:10px 5px; display: flex; justify-content: center; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-        nav a { color:white; padding: 5px 15px; text-decoration:none; font-weight:600; font-size:14px; cursor: pointer; }
+        nav button { background: none; border: none; color:white; padding: 5px 15px; text-decoration:none; font-weight:600; font-size:14px; cursor: pointer; }
 
         /* CONTAINER */
         .container { 
@@ -70,8 +70,8 @@
 </header>
 
 <nav>
-  <a onclick="window.location.reload()">NEW BOOKING</a>
-  <a onclick="showTrack()">TRACK STATUS</a>
+  <button id="navNew">NEW BOOKING</button>
+  <button id="navTrack">TRACK STATUS</button>
 </nav>
 
 <div class="container" id="trackPage">
@@ -100,7 +100,7 @@
         <div><label>Chassis No. (Last 5) *</label><input type="text" id="chassis" maxlength="5" placeholder="Enter last 5 digits"></div>
         <div><label>Engine No. (Last 5) *</label><input type="text" id="engine" maxlength="5" placeholder="Enter last 5 digits"></div>
     </div>
-    <button class="btn-next" onclick="goStep2()">Next</button>
+    <button class="btn-next" id="btnGoStep2">Next</button>
   </div>
 
   <!-- Step 2: Personal Information -->
@@ -112,7 +112,7 @@
         <div><label>Email ID *</label><input type="email" id="uEmail" placeholder="example@mail.com"></div>
         <div><label>Full Address *</label><textarea id="uAddr" rows="2"></textarea></div>
     </div>
-    <button class="btn-next" onclick="goStep3()">Next</button>
+    <button class="btn-next" id="btnGoStep3">Next</button>
   </div>
 
   <!-- Step 3: Payment -->
@@ -125,7 +125,7 @@
     <label>UTR Number / Transaction ID *</label>
     <input type="text" id="utr" placeholder="Enter 12 digit UTR">
     <div id="submitStatus"></div>
-    <button class="btn-next" id="btnSubmit" onclick="submitBooking()">Confirm Payment & Submit</button>
+    <button class="btn-next" id="btnSubmit">Confirm Payment & Submit</button>
   </div>
 
   <!-- Success/Thank You Page -->
@@ -141,7 +141,7 @@
       🚚 Note: Your plate will be delivered within 8 to 10 working days.
     </p>
     <p style="color: #666; font-size: 13px; margin-top:15px;">Please save this Application ID for future reference and tracking.</p>
-    <button class="btn-next" onclick="window.location.reload()" style="background:#666; width:auto; padding:10px 30px;">Apply for Another Vehicle</button>
+    <button class="btn-next" id="btnReset" style="background:#666; width:auto; padding:10px 30px;">Apply for Another Vehicle</button>
   </div>
 </div>
 
@@ -152,28 +152,38 @@
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // Firebase Config
     const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'plate-service-portal';
 
+    // Auth logic
     signInAnonymously(auth).catch(e => console.error("Auth failed:", e));
 
-    // Expose functions to global window object
-    window.showTrack = () => { 
+    // Fix: Event Listeners manually lagane padenge
+    document.getElementById('navNew').addEventListener('click', () => window.location.reload());
+    document.getElementById('navTrack').addEventListener('click', showTrack);
+    document.getElementById('btnGoStep2').addEventListener('click', goStep2);
+    document.getElementById('btnGoStep3').addEventListener('click', goStep3);
+    document.getElementById('btnSubmit').addEventListener('click', submitBooking);
+    document.getElementById('btnReset').addEventListener('click', () => window.location.reload());
+    document.getElementById('btnTrack').addEventListener('click', trackStatus);
+
+    function showTrack() { 
         document.getElementById('bookingBox').style.display='none'; 
         document.getElementById('trackPage').style.display='block'; 
-    };
+    }
 
-    window.goStep2 = () => {
+    function goStep2() {
         const reg = document.getElementById('regNo').value.trim();
         const state = document.getElementById('stateSelect').value;
         const chassis = document.getElementById('chassis').value.trim();
         const engine = document.getElementById('engine').value.trim();
         
         if(!reg || !state || !chassis || !engine) { 
-            alert("Please fill all details: Reg No, State, Chassis (5 digits) and Engine (5 digits)"); 
+            showError("Please fill all details: Reg No, State, Chassis (5 digits) and Engine (5 digits)"); 
             return; 
         }
         
@@ -181,16 +191,16 @@
         document.getElementById('step2').style.display = 'block';
         document.getElementById('progressBar').style.width = '66%';
         window.scrollTo(0, 0);
-    };
+    }
 
-    window.goStep3 = () => {
+    function goStep3() {
         const name = document.getElementById('uName').value.trim();
         const mob = document.getElementById('uMob').value.trim();
         const email = document.getElementById('uEmail').value.trim();
         const addr = document.getElementById('uAddr').value.trim();
         
         if(!name || !mob || !email || !addr) { 
-            alert("Please fill all personal details"); 
+            showError("Please fill all personal details"); 
             return; 
         }
         
@@ -198,11 +208,11 @@
         document.getElementById('step3').style.display = 'block';
         document.getElementById('progressBar').style.width = '85%';
         window.scrollTo(0, 0);
-    };
+    }
 
-    window.submitBooking = async () => {
+    async function submitBooking() {
         const utrValue = document.getElementById('utr').value.trim();
-        if(!utrValue) { alert("Please enter Transaction ID / UTR Number"); return; }
+        if(!utrValue) { showError("Please enter Transaction ID / UTR Number"); return; }
 
         const btn = document.getElementById('btnSubmit');
         const statusMsg = document.getElementById('submitStatus');
@@ -227,30 +237,23 @@
                 timestamp: serverTimestamp()
             };
 
-            // Background FireStore Task
-            setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId), data)
-                .catch(e => console.log("Silent error, likely network/config: ", e));
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId), data);
             
-            // Wait slightly for UI feel then show success
-            setTimeout(() => {
-                document.getElementById('bId').innerText = bookingId;
-                document.getElementById('step3').style.display = 'none';
-                document.getElementById('thankyouPage').style.display = 'block';
-                document.getElementById('progressBar').style.width = '100%';
-                window.scrollTo(0, 0);
-            }, 1000);
-
-        } catch (err) {
-            console.error("Submission Error:", err);
-            // Even if something fails, we show success page to avoid user drop-off
             document.getElementById('bId').innerText = bookingId;
             document.getElementById('step3').style.display = 'none';
             document.getElementById('thankyouPage').style.display = 'block';
+            document.getElementById('progressBar').style.width = '100%';
             window.scrollTo(0, 0);
-        }
-    };
 
-    document.getElementById("btnTrack").onclick = async () => {
+        } catch (err) {
+            console.error("Submission Error:", err);
+            showError("Technical error! Please try again.");
+            btn.disabled = false;
+            statusMsg.innerHTML = "";
+        }
+    }
+
+    async function trackStatus() {
         const trackId = document.getElementById("trackId").value.trim().toUpperCase();
         if(!trackId) return;
         const resultDiv = document.getElementById("trackResult");
@@ -274,7 +277,16 @@
         } catch (err) {
             resultDiv.innerHTML = `<p style="color:red; text-align:center;">Error tracking status.</p>`;
         }
-    };
+    }
+
+    function showError(msg) {
+        // Custom message logic as alert() is restricted
+        const errDiv = document.createElement('div');
+        errDiv.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#d32f2f; color:white; padding:15px 25px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+        errDiv.innerText = msg;
+        document.body.appendChild(errDiv);
+        setTimeout(() => errDiv.remove(), 3000);
+    }
 </script>
 </body>
 </html>
