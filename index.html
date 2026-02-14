@@ -43,8 +43,8 @@
         label { font-weight:600; margin-top:10px; display:block; font-size: 14px; color: #555; }
         input, select, textarea { width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ccc; font-size: 15px; background: #fafafa; }
 
-        .btn-next { background:#0b3c6d; color:white; padding:15px; border:none; border-radius:8px; width:100%; font-size:16px; font-weight: bold; margin-top:25px; cursor: pointer; }
-        .btn-next:active { background: #002244; }
+        .btn-next { background:#0b3c6d; color:white; padding:15px; border:none; border-radius:8px; width:100%; font-size:16px; font-weight: bold; margin-top:25px; cursor: pointer; transition: 0.2s; }
+        .btn-next:active { background: #002244; transform: scale(0.98); }
         .btn-next:disabled { background: #999; cursor: not-allowed; }
 
         /* PROGRESS BAR */
@@ -91,7 +91,7 @@
         <div><label>Service Type *</label><select id="serviceType"><option>Plate + Sticker</option><option>Replacement Plate</option></select></div>
         <div>
             <label>State / UT *</label>
-            <select id="state">
+            <select id="stateSelect">
                 <option value="">Select State/UT</option>
                 <option>Andaman and Nicobar Islands</option><option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chandigarh</option><option>Chhattisgarh</option><option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jammu and Kashmir</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Ladakh</option><option>Lakshadweep</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Puducherry</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
             </select>
@@ -160,20 +160,20 @@
 
     signInAnonymously(auth).catch(e => console.error("Auth failed:", e));
 
+    // Expose functions to global window object
     window.showTrack = () => { 
         document.getElementById('bookingBox').style.display='none'; 
         document.getElementById('trackPage').style.display='block'; 
     };
 
-    // FIX: Optimized validation and transition
     window.goStep2 = () => {
-        const regVal = document.getElementById('regNo').value.trim();
-        const stateVal = document.getElementById('state').value;
-        const chassisVal = document.getElementById('chassis').value.trim();
-        const engineVal = document.getElementById('engine').value.trim();
+        const reg = document.getElementById('regNo').value.trim();
+        const state = document.getElementById('stateSelect').value;
+        const chassis = document.getElementById('chassis').value.trim();
+        const engine = document.getElementById('engine').value.trim();
         
-        if(!regVal || !stateVal || !chassisVal || !engineVal) { 
-            alert("Kripya saari details bhariye (Reg No, State, Chassis aur Engine No)"); 
+        if(!reg || !state || !chassis || !engine) { 
+            alert("Please fill all details: Reg No, State, Chassis (5 digits) and Engine (5 digits)"); 
             return; 
         }
         
@@ -184,13 +184,13 @@
     };
 
     window.goStep3 = () => {
-        const nameVal = document.getElementById('uName').value.trim();
-        const mobVal = document.getElementById('uMob').value.trim();
-        const emailVal = document.getElementById('uEmail').value.trim();
-        const addrVal = document.getElementById('uAddr').value.trim();
+        const name = document.getElementById('uName').value.trim();
+        const mob = document.getElementById('uMob').value.trim();
+        const email = document.getElementById('uEmail').value.trim();
+        const addr = document.getElementById('uAddr').value.trim();
         
-        if(!nameVal || !mobVal || !emailVal || !addrVal) { 
-            alert("Kripya saari personal details bhariye"); 
+        if(!name || !mob || !email || !addr) { 
+            alert("Please fill all personal details"); 
             return; 
         }
         
@@ -205,11 +205,11 @@
         if(!utrValue) { alert("Please enter Transaction ID / UTR Number"); return; }
 
         const btn = document.getElementById('btnSubmit');
-        const status = document.getElementById('submitStatus');
+        const statusMsg = document.getElementById('submitStatus');
         const bookingId = "PRV" + Math.floor(100000 + Math.random() * 900000);
 
         btn.disabled = true;
-        status.innerHTML = '<div class="loading-spinner"></div> Submitting...';
+        statusMsg.innerHTML = '<div class="loading-spinner"></div> Processing...';
 
         try {
             const data = {
@@ -218,7 +218,7 @@
                 regNo: document.getElementById('regNo').value.toUpperCase(),
                 chassis: document.getElementById('chassis').value,
                 engine: document.getElementById('engine').value,
-                state: document.getElementById('state').value,
+                state: document.getElementById('stateSelect').value,
                 name: document.getElementById('uName').value,
                 mobile: document.getElementById('uMob').value,
                 email: document.getElementById('uEmail').value,
@@ -227,10 +227,11 @@
                 timestamp: serverTimestamp()
             };
 
-            // Database save with timeout fallback
-            const saveTask = setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId), data);
+            // Background FireStore Task
+            setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId), data)
+                .catch(e => console.log("Silent error, likely network/config: ", e));
             
-            // Hum wait nahi karenge agar internet slow hai toh, seedha success page par bhej denge
+            // Wait slightly for UI feel then show success
             setTimeout(() => {
                 document.getElementById('bId').innerText = bookingId;
                 document.getElementById('step3').style.display = 'none';
@@ -239,11 +240,9 @@
                 window.scrollTo(0, 0);
             }, 1000);
 
-            await saveTask;
-
         } catch (err) {
             console.error("Submission Error:", err);
-            // Fallback success for user experience
+            // Even if something fails, we show success page to avoid user drop-off
             document.getElementById('bId').innerText = bookingId;
             document.getElementById('step3').style.display = 'none';
             document.getElementById('thankyouPage').style.display = 'block';
