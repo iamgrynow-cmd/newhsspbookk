@@ -123,19 +123,6 @@ background:#fafafa;
 text-align:center
 }
 
-/* QR Container Centering */
-.qr-container{
-display:flex;
-justify-content:center;
-align-items:center;
-margin:15px 0;
-}
-.qr-container img{
-max-width:180px;
-width:100%;
-height:auto;
-}
-
 .upi-apps{
 display:flex;
 justify-content:center;
@@ -146,14 +133,14 @@ margin-top:10px
 .upi-apps img{width:45px}
 
 .file-input-wrapper{
-border:2px dashed var(--primary);
+border:2px dashed #0b3c6d;
 padding:15px;
 border-radius:10px;
 text-align:center;
 margin-top:15px;
 cursor:pointer;
 font-weight:bold;
-color:var(--primary);
+color:#0b3c6d;
 }
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
@@ -197,7 +184,6 @@ font-size:14px;
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
-.qr-container img{width:150px;}
 }
 </style>
 </head>
@@ -219,23 +205,23 @@ nav button{font-size:14px;}
 
 <div class="container">
 
-<!-- TRACK -->
+<!-- TRACK PAGE -->
 <div id="trackPage">
 <h3>Track Application</h3>
-<input id="trackId" placeholder="HSRP123456">
+<input id="trackId" placeholder="Enter HSRP ID e.g HSRP123456" style="text-transform:uppercase">
 <button class="btn-next" onclick="trackOrder()">Check Status</button>
 <div id="trackResult" style="margin-top:15px;"></div>
 </div>
 
+<!-- BOOKING BOX -->
 <div id="bookingBox">
 
 <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
 <!-- STEP 1 -->
 <div id="step1">
-<div class="step-title">Step 1: Vehicle Information</div>
+<div class="step-title">Step 1: Vehicle Category & State/UT</div>
 <div class="form-grid">
-
 <select id="vehicleType">
 <option value="">Select Vehicle Category</option>
 <option>Two Wheeler</option>
@@ -285,10 +271,9 @@ nav button{font-size:14px;}
 <option>Andaman and Nicobar Islands</option>
 </select>
 
-<input id="regNo" placeholder="Vehicle Number">
-<input id="chassis" placeholder="Chassis Number Last 5 Digits" maxlength="5">
-<input id="engine" placeholder="Engine Number Last 5 Digits" maxlength="5">
-
+<input id="regNo" placeholder="Vehicle Registration Number">
+<input id="chassis" placeholder="Chassis Number (Last 5 Digits)" maxlength="5">
+<input id="engine" placeholder="Engine Number (Last 5 Digits)" maxlength="5">
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
 </div>
@@ -312,11 +297,7 @@ nav button{font-size:14px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>Scan & Pay with any UPI App</h3>
-
-<div class="qr-container">
-<img src="qr.png" alt="Payment QR">
-</div>
+<h3>Scan & Pay with any UPI app</h3>
 
 <div class="upi-apps">
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
@@ -325,7 +306,7 @@ nav button{font-size:14px;}
 </div>
 
 <p style="margin-top:10px;font-size:15px;">
-Upload your payment screenshot below for verification.
+After payment, upload your payment screenshot below for verification.
 </p>
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
@@ -346,18 +327,16 @@ Upload Payment Screenshot
 <div class="success-check">✔</div>
 <h2 style="text-align:center;">Booking Successful</h2>
 <p style="text-align:center;">Application ID</p>
-<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight); "></h3>
+<h3 id="finalId" style="text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed #61c861;"></h3>
 
 <div class="info-list">
-<div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
-<div class="info-item"><span>Owner:</span><b id="displayOwner"></b></div>
-<div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
+<div class="info-item"><span>Owner Name:</span><b>Privacy Protocol</b></div>
 </div>
 
 <h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
-<p style=" background:#ffeaea; padding:10px; border-radius:10px; font-weight:bold; color:#ea4335; border-left:5px solid #ea4335; "> ✔ Delivery within 8–10 working days </p>
+<p style="background:#ffeaea; padding:10px; border-radius:10px; font-weight:bold; color:#ea4335; border-left:5px solid #ea4335;">✔ Delivery within 8–10 working days</p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -394,13 +373,9 @@ document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔
 
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
-orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
+orders[id]={status:"Pending Verification",owner:"Privacy Protocol"};
 
 finalId.innerText=id;
-displayReg.innerText=regNo.value;
-displayOwner.innerText=uName.value;
-displayDate.innerText=new Date().toDateString();
-
 bookingBox.style.display="none";
 thankyouPage.style.display="block";
 }
@@ -413,15 +388,10 @@ trackPage.style.display="block";
 
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
-if(orders[id]){
 trackResult.innerHTML=`<div class="info-list">
-<div class="info-item"><span>Status:</span><b>${orders[id].status}</b></div>
-<div class="info-item"><span>Vehicle:</span><b>${orders[id].vehicle}</b></div>
-<div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
+<div class="info-item"><span>Owner Name:</span><b>Privacy Protocol</b></div>
+<div class="info-item"><span>Status:</span><b>Pending Verification</b></div>
 </div>`;
-}else{
-trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
-}
 }
 </script>
 
