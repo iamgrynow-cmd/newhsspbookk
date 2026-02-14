@@ -26,14 +26,9 @@ nav button{color:#fff;background:none;border:none;padding:10px 15px;font-weight:
 label{font-size:13px;font-weight:bold}
 input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc}
 
-.error{border-color:red}
 .error-text{color:red;font-size:12px}
 
 .btn-next{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:8px;width:100%;margin-top:10px;font-size:16px;cursor:pointer}
-
-@media(max-width:600px){
-.btn-next{position:sticky;bottom:10px;z-index:999}
-}
 
 .progress{height:8px;background:#ddd;border-radius:10px;margin-bottom:15px}
 .progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3);transition:width 0.3s ease;}
@@ -45,29 +40,33 @@ input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid
 .upi-apps{display:flex;justify-content:center;gap:15px;margin-top:10px}
 .upi-apps img{width:45px}
 
-.file-input-wrapper{border:2px dashed #ccc;padding:15px;border-radius:10px;text-align:center;margin-top:10px;cursor:pointer}
-#screenshot-preview{max-width:100%;display:none;margin-top:10px;border-radius:8px;}
-
-.loading-spinner{
-border:3px solid #f3f3f3;
-border-top:3px solid var(--primary);
-border-radius:50%;
-width:18px;height:18px;
-animation:spin 1s linear infinite;
-display:inline-block;
-margin-right:6px;
-vertical-align: middle;
+.file-input-wrapper{
+border:2px dashed #ccc;
+padding:15px;
+border-radius:10px;
+text-align:center;
+margin-top:10px;
+cursor:pointer;
+font-size:14px;
 }
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
 
 .success-check{font-size:60px;color:var(--success);text-align:center;}
 
 .info-list{text-align:left;background:#f9f9f9;padding:10px;border-radius:8px}
-.info-item{display:flex;justify-content:space-between;margin-bottom:5px;border-bottom: 1px solid #eee;padding: 5px 0;}
+.info-item{display:flex;justify-content:space-between;margin-bottom:5px;border-bottom:1px solid #eee;padding:5px 0;}
 
 footer{text-align:center;padding:15px;color:#666}
+
+/* Mobile Responsive */
+@media(max-width:600px){
+.container{margin:10px;padding:15px;}
+header h3{font-size:16px;}
+nav button{font-size:13px;padding:8px;}
+.payment-card{padding:10px;}
+.qr-container img{width:140px;}
+}
 </style>
 </head>
 
@@ -88,7 +87,6 @@ footer{text-align:center;padding:15px;color:#666}
 
 <div class="container">
 
-<!-- TRACK -->
 <div id="trackPage">
 <h3>Track Application</h3>
 <input id="trackId" placeholder="HSRP123456" style="text-transform:uppercase">
@@ -107,11 +105,17 @@ footer{text-align:center;padding:15px;color:#666}
 <div>
 <label>Vehicle Category</label>
 <select id="vehicleType">
-<option value="">Select</option>
+<option value="">Select Vehicle Category</option>
+<optgroup label="Normal Vehicles">
 <option>Two Wheeler</option>
 <option>Four Wheeler</option>
-<option>Electric Vehicle</option>
 <option>Commercial Vehicle</option>
+</optgroup>
+<optgroup label="Electric Vehicles (EV)">
+<option>Electric Two Wheeler (EV)</option>
+<option>Electric Four Wheeler (EV)</option>
+<option>Electric Commercial Vehicle (EV)</option>
+</optgroup>
 </select>
 <div class="error-text" id="errVehicle"></div>
 </div>
@@ -125,50 +129,35 @@ footer{text-align:center;padding:15px;color:#666}
 <option>Assam</option>
 <option>Bihar</option>
 <option>Chhattisgarh</option>
-<option>Goa</option>
+<option>Delhi</option>
 <option>Gujarat</option>
 <option>Haryana</option>
-<option>Himachal Pradesh</option>
-<option>Jharkhand</option>
 <option>Karnataka</option>
-<option>Kerala</option>
-<option>Madhya Pradesh</option>
 <option>Maharashtra</option>
-<option>Manipur</option>
-<option>Meghalaya</option>
-<option>Mizoram</option>
-<option>Nagaland</option>
-<option>Odisha</option>
 <option>Punjab</option>
 <option>Rajasthan</option>
-<option>Sikkim</option>
 <option>Tamil Nadu</option>
-<option>Telangana</option>
-<option>Tripura</option>
 <option>Uttar Pradesh</option>
-<option>Uttarakhand</option>
 <option>West Bengal</option>
-<option>Delhi</option>
-<option>Jammu and Kashmir</option>
 </select>
 <div class="error-text" id="errState"></div>
 </div>
 
 <div>
 <label>Vehicle No</label>
-<input id="regNo" style="text-transform:uppercase" placeholder="DL01AB1234">
+<input id="regNo" placeholder="DL01AB1234" style="text-transform:uppercase">
 <div class="error-text" id="errReg"></div>
 </div>
 
 <div>
 <label>Chassis (Last 5)</label>
-<input id="chassis" maxlength="5" placeholder="12345">
+<input id="chassis" maxlength="5">
 <div class="error-text" id="errChassis"></div>
 </div>
 
 <div>
 <label>Engine (Last 5)</label>
-<input id="engine" maxlength="5" placeholder="67890">
+<input id="engine" maxlength="5">
 <div class="error-text" id="errEngine"></div>
 </div>
 
@@ -182,22 +171,22 @@ footer{text-align:center;padding:15px;color:#666}
 <div class="form-grid">
 <div>
 <label>Full Name</label>
-<input id="uName" placeholder="Full Name">
+<input id="uName">
 <div class="error-text" id="errName"></div>
 </div>
 <div>
 <label>Mobile Number</label>
-<input id="uMob" placeholder="Mobile" maxlength="10">
+<input id="uMob" maxlength="10">
 <div class="error-text" id="errMob"></div>
 </div>
 <div>
-<label>Email Address</label>
-<input id="uEmail" placeholder="Email">
+<label>Email</label>
+<input id="uEmail">
 <div class="error-text" id="errEmail"></div>
 </div>
-<div style="grid-column: 1 / -1;">
-<label>Complete Address</label>
-<textarea id="uAddr" placeholder="Address"></textarea>
+<div style="grid-column:1/-1;">
+<label>Address</label>
+<textarea id="uAddr"></textarea>
 <div class="error-text" id="errAddr"></div>
 </div>
 </div>
@@ -205,7 +194,7 @@ footer{text-align:center;padding:15px;color:#666}
 <button class="btn-next" style="background:#666" onclick="backStep1()">Back</button>
 </div>
 
-<!-- STEP 3 PAYMENT -->
+<!-- STEP 3 -->
 <div id="step3">
 <div class="step-title">Secure Payment</div>
 
@@ -222,26 +211,25 @@ footer{text-align:center;padding:15px;color:#666}
 <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo.svg">
 </div>
 
-<p style="font-size:13px;margin-top:8px;">Upload payment screenshot for verification</p>
+<p>Upload payment screenshot for verification</p>
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Click to Upload Screenshot
 <input type="file" id="screenshot" hidden>
-<img id="screenshot-preview">
 </div>
 
 </div>
 
-<button class="btn-next" id="btnSubmit" onclick="submitForm()">Complete Submission</button>
+<button class="btn-next" onclick="submitForm()">Complete Submission</button>
 </div>
 </div>
 
 <!-- THANK YOU -->
-<div id="thankyouPage" style="text-align: center;">
+<div id="thankyouPage" style="text-align:center;">
 <div class="success-check">✔</div>
 <h2>Booking Successful</h2>
-<p style="margin: 0; color: #666; font-size: 14px;">Application ID</p>
-<h3 id="finalId" style="color:var(--primary); margin-top: 5px;"></h3>
+<p>Application ID</p>
+<h3 id="finalId"></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -249,10 +237,7 @@ Click to Upload Screenshot
 <div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
 </div>
 
-<h4 style="margin-top:20px;">Process Timeline</h4>
-<p style="text-align:left;">✔ Details Verification (24 hrs)</p>
-<p style="text-align:left;">✔ Plate Manufacturing</p>
-<p style="text-align:left;">✔ Delivery within <b>8–10 working days</b></p>
+<p>Delivery within <b>8–10 working days</b></p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -264,117 +249,61 @@ Click to Upload Screenshot
 <script>
 let orders = {};
 const regInput = document.getElementById("regNo");
-const progressBar = document.getElementById("progressBar");
-const previewImg = document.getElementById("screenshot-preview");
 const screenshotInput = document.getElementById("screenshot");
 
 regInput.addEventListener("input", () => {
     regInput.value = regInput.value.toUpperCase();
 });
 
-function clearErrors() {
-    document.querySelectorAll(".error-text").forEach(e => e.innerText = "");
-    document.querySelectorAll("input,select,textarea").forEach(e => e.classList.remove("error"));
-}
-
-function goStep2() {
-    clearErrors();
-    let valid = true;
-    if (!document.getElementById('vehicleType').value) { valid = false; document.getElementById('errVehicle').innerText = "Required"; }
-    if (!document.getElementById('stateSelect').value) { valid = false; document.getElementById('errState').innerText = "Required"; }
-    if (!document.getElementById('regNo').value) { valid = false; document.getElementById('errReg').innerText = "Required"; }
-    if (!document.getElementById('chassis').value) { valid = false; document.getElementById('errChassis').innerText = "Required"; }
-    if (!document.getElementById('engine').value) { valid = false; document.getElementById('errEngine').innerText = "Required"; }
-
-    if (!valid) return;
-    document.getElementById('step1').style.display = "none";
-    document.getElementById('step2').style.display = "block";
-    progressBar.style.width = "66%";
-}
-
-function goStep3() {
-    clearErrors();
-    let valid = true;
-    if (!document.getElementById('uName').value) { valid = false; document.getElementById('errName').innerText = "Required"; }
-    if (!document.getElementById('uMob').value) { valid = false; document.getElementById('errMob').innerText = "Required"; }
-    if (!document.getElementById('uEmail').value) { valid = false; document.getElementById('errEmail').innerText = "Required"; }
-    if (!document.getElementById('uAddr').value) { valid = false; document.getElementById('errAddr').innerText = "Required"; }
-
-    if (!valid) return;
-    document.getElementById('step2').style.display = "none";
-    document.getElementById('step3').style.display = "block";
-    progressBar.style.width = "100%";
-}
-
-function backStep1() {
-    document.getElementById('step2').style.display = "none";
-    document.getElementById('step1').style.display = "block";
-    progressBar.style.width = "33%";
-}
-
-screenshotInput.onchange = e => {
-    if (e.target.files && e.target.files[0]) {
-        let r = new FileReader();
-        r.onload = () => {
-            previewImg.src = r.result;
-            previewImg.style.display = "block";
-        }
-        r.readAsDataURL(e.target.files[0]);
-    }
+screenshotInput.onchange = () => {
+ document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded Successfully ✔";
 };
 
-function submitForm() {
-    if (!screenshotInput.files.length) {
-        alert("Bhai, payment screenshot upload karein verification ke liye.");
-        return;
-    }
-    const btnSubmit = document.getElementById('btnSubmit');
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<span class="loading-spinner"></span>Submitting...';
-
-    setTimeout(() => {
-        let id = "HSRP" + Math.floor(100000 + Math.random() * 900000);
-        let reg = document.getElementById('regNo').value;
-        let owner = document.getElementById('uName').value;
-        
-        orders[id] = { 
-            status: "Pending Verification", 
-            vehicle: reg, 
-            owner: owner,
-            type: document.getElementById('vehicleType').value,
-            state: document.getElementById('stateSelect').value
-        };
-
-        document.getElementById('finalId').innerText = id;
-        document.getElementById('displayReg').innerText = reg;
-        document.getElementById('displayOwner').innerText = owner;
-        document.getElementById('displayDate').innerText = new Date().toDateString();
-
-        document.getElementById('bookingBox').style.display = "none";
-        document.getElementById('thankyouPage').style.display = "block";
-    }, 1500);
+function goStep2(){
+if(!vehicleType.value || !stateSelect.value || !regNo.value || !chassis.value || !engine.value){
+alert("Please fill all fields");
+return;
+}
+step1.style.display="none";
+step2.style.display="block";
+progressBar.style.width="66%";
 }
 
-function showTrack() {
-    document.getElementById('bookingBox').style.display = "none";
-    document.getElementById('thankyouPage').style.display = "none";
-    document.getElementById('trackPage').style.display = "block";
+function goStep3(){
+if(!uName.value || !uMob.value || !uEmail.value || !uAddr.value){
+alert("Please fill all fields");
+return;
+}
+step2.style.display="none";
+step3.style.display="block";
+progressBar.style.width="100%";
 }
 
-function trackOrder() {
-    let id = document.getElementById('trackId').value.toUpperCase();
-    let resDiv = document.getElementById('trackResult');
-    if (orders[id]) {
-        resDiv.innerHTML = `<div class="info-list">
-            <div class="info-item"><span>Status:</span><b style="color:var(--primary)">${orders[id].status}</b></div>
-            <div class="info-item"><span>Application ID:</span><b>${id}</b></div>
-            <div class="info-item"><span>Vehicle No:</span><b>${orders[id].vehicle}</b></div>
-            <div class="info-item"><span>Category:</span><b>${orders[id].type}</b></div>
-            <div class="info-item"><span>State:</span><b>${orders[id].state}</b></div>
-        </div>`;
-    } else {
-        resDiv.innerHTML = "<p style='color:red'>Application ID galat hai ya nahi mili.</p>";
-    }
+function backStep1(){
+step2.style.display="none";
+step1.style.display="block";
+progressBar.style.width="33%";
+}
+
+function submitForm(){
+let id="HSRP"+Math.floor(100000+Math.random()*900000);
+finalId.innerText=id;
+displayReg.innerText=regNo.value;
+displayOwner.innerText=uName.value;
+displayDate.innerText=new Date().toDateString();
+
+bookingBox.style.display="none";
+thankyouPage.style.display="block";
+}
+
+function showTrack(){
+bookingBox.style.display="none";
+thankyouPage.style.display="none";
+trackPage.style.display="block";
+}
+
+function trackOrder(){
+trackResult.innerHTML="<p>Status: Pending Verification</p>";
 }
 </script>
 
