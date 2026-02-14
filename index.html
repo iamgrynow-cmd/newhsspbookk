@@ -296,7 +296,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+// Boilerplate for firebase config
+const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{"apiKey":"fake-key","authDomain":"fake.firebaseapp.com","projectId":"fake-proj"}');
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -311,7 +312,7 @@ const initAuth = async () => {
         } else {
             await signInAnonymously(auth);
         }
-    } catch(e) { console.error("Auth error:", e); }
+    } catch(e) { console.warn("Auth initialization..."); }
 };
 
 onAuthStateChanged(auth, (user) => { currentUser = user; });
@@ -338,36 +339,31 @@ const validate = (ids) => {
     return true;
 };
 
-// Simplified and robust navigation listeners
-window.addEventListener('load', () => {
-    // Step 1 -> Step 2
-    document.getElementById('btnGoStep2').addEventListener('click', () => {
-        if(validate(['vehicleType', 'stateSelect', 'regNo', 'chassis', 'engine'])) {
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
-            document.getElementById('progressBar').style.width = '66%';
-            window.scrollTo(0, 0);
-        }
-    });
-
-    // Step 2 -> Step 3
-    document.getElementById('btnGoStep3').addEventListener('click', () => {
-        if(validate(['uName', 'uMob', 'uEmail', 'uAddr'])) {
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step3').style.display = 'block';
-            document.getElementById('progressBar').style.width = '100%';
-            window.scrollTo(0, 0);
-        }
-    });
-
-    // Back Navigation
-    document.getElementById('btnStep2Back').addEventListener('click', () => {
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step1').style.display = 'block';
-        document.getElementById('progressBar').style.width = '33%';
+// UI Navigation
+document.getElementById('btnGoStep2').onclick = () => {
+    if(validate(['vehicleType', 'stateSelect', 'regNo', 'chassis', 'engine'])) {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('progressBar').style.width = '66%';
         window.scrollTo(0, 0);
-    });
-});
+    }
+};
+
+document.getElementById('btnGoStep3').onclick = () => {
+    if(validate(['uName', 'uMob', 'uEmail', 'uAddr'])) {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'block';
+        document.getElementById('progressBar').style.width = '100%';
+        window.scrollTo(0, 0);
+    }
+};
+
+document.getElementById('btnStep2Back').onclick = () => {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('progressBar').style.width = '33%';
+    window.scrollTo(0, 0);
+};
 
 document.getElementById('screenshot').onchange = (e) => {
     const file = e.target.files[0];
@@ -383,7 +379,6 @@ document.getElementById('screenshot').onchange = (e) => {
     }
 };
 
-// Final Submit Logic
 document.getElementById('btnSubmit').onclick = async () => {
     const btn = document.getElementById('btnSubmit');
     const statusDiv = document.getElementById('submitStatus');
@@ -412,6 +407,7 @@ document.getElementById('btnSubmit').onclick = async () => {
             createdAt: serverTimestamp()
         };
 
+        // Rule 1: Correct path structure
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), bookingData);
         
         document.getElementById('displayReg').innerText = registration;
@@ -424,12 +420,12 @@ document.getElementById('btnSubmit').onclick = async () => {
         window.scrollTo(0,0);
         
     } catch (error) {
-        statusDiv.innerHTML = `<span style="color:var(--error);">Error: Connection failed.</span>`;
+        console.error(error);
+        statusDiv.innerHTML = `<span style="color:var(--error);">Error saving data. Please check connection.</span>`;
         btn.disabled = false;
     }
 };
 
-// Tracking Logic
 document.getElementById('btnTrack').onclick = async () => {
     const tid = document.getElementById('trackId').value.trim().toUpperCase();
     if(!tid) return;
@@ -444,7 +440,7 @@ document.getElementById('btnTrack').onclick = async () => {
                 Owner: ${snap.data().owner}
             </div>`;
         } else { 
-            res.innerHTML = "<div style='color:red; margin-top:10px; font-size:14px;'>ID not found.</div>"; 
+            res.innerHTML = "<div style='color:red; margin-top:10px; font-size:14px;'>Booking ID not found.</div>"; 
         }
     } catch(e) { 
         res.innerHTML = "Connection error."; 
