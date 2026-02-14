@@ -2,457 +2,355 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Plate Service Portal | Official HSRP Facilitator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
-<script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
-<script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
+<title>Plate Service Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root { --primary: #0b3c6d; --secondary: #003366; --bg: #f2f6fb; --white: #ffffff; --error: #d32f2f; --success: #28a745; --text-light: #666; }
-body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: #333; overflow-x: hidden; }
-* { box-sizing: border-box; }
+:root{--primary:#0b3c6d;--bg:#f2f6fb;--success:#28a745;--error:#d32f2f;}
+body{margin:0;font-family:Segoe UI;background:var(--bg);}
+*{box-sizing:border-box;}
 
-header { background: var(--primary); color: var(--white); padding: 15px; display: flex; gap: 12px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-header img { height: 45px; border-radius: 5px; }
-header h2 { margin: 0; font-size: 1.2rem; }
-header p { margin: 2px 0 0 0; font-size: 0.8rem; opacity: 0.9; }
+header{background:var(--primary);color:#fff;padding:12px;display:flex;gap:10px;align-items:center;}
+header img{height:40px}
 
-nav { background: var(--secondary); padding: 12px; display: flex; justify-content: center; gap: 5px; position: sticky; top: 0; z-index: 100; }
-nav button { background: none; border: none; color: var(--white); font-size: 14px; padding: 8px 15px; cursor: pointer; font-weight: 600; border-radius: 4px; transition: 0.3s; }
-nav button:hover { background: rgba(255,255,255,0.1); }
+nav{background:#003366;display:flex;justify-content:center}
+nav button{color:#fff;background:none;border:none;padding:10px 15px;font-weight:bold}
 
-.container { width: 94%; max-width: 600px; margin: 20px auto; background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); min-height: 400px; }
+.container{max-width:600px;margin:15px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
 
-.step-title { background: #e3ecff; padding: 12px 15px; border-left: 6px solid var(--primary); margin-bottom: 20px; border-radius: 0 8px 8px 0; font-weight: bold; color: var(--primary); }
+.step-title{background:#e3ecff;padding:10px;margin-bottom:15px;border-left:5px solid var(--primary)}
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-@media(max-width: 600px){ 
-    .form-grid { grid-template-columns: 1fr; } 
-    .container { padding: 20px; margin: 15px auto; width: 92%; }
-    header h2 { font-size: 1rem; }
-    nav button { padding: 8px 10px; font-size: 12px; }
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+
+label{font-size:13px;font-weight:bold}
+input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc}
+
+.error{border-color:red}
+.error-text{color:red;font-size:12px}
+
+.btn-next{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:8px;width:100%;margin-top:10px;font-size:16px}
+
+/* Sticky mobile button */
+@media(max-width:600px){
+.btn-next{position:sticky;bottom:10px;z-index:999}
 }
 
-label { font-weight: 600; font-size: 13px; display: block; margin-bottom: 6px; color: #444; }
-input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1.5px solid #dee2e6; margin-bottom: 5px; font-size: 14px; transition: 0.3s; outline: none; appearance: none; background-color: #fff; }
-input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11, 60, 109, 0.1); }
+.progress{height:8px;background:#ddd;border-radius:10px;margin-bottom:15px}
+.progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3)}
 
-.input-error { border-color: var(--error) !important; background-color: #fff8f8; }
+.payment-card{border:1px solid #ddd;padding:15px;border-radius:12px;background:#fafafa;text-align:center}
+.payment-card h3{margin:5px 0}
+.qr-container img{width:160px;margin:10px 0}
 
-.btn-next { background: var(--primary); color: var(--white); padding: 15px; border: none; border-radius: 8px; width: 100%; margin-top: 10px; font-size: 16px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(11, 60, 109, 0.2); transition: 0.3s; -webkit-tap-highlight-color: transparent; }
-.btn-next:active { transform: scale(0.98); }
-.btn-next:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+.upi-apps{display:flex;justify-content:center;gap:15px;margin-top:10px}
+.upi-apps img{width:45px}
 
-.progress { background: #e9ecef; height: 10px; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
-.progress-bar { height: 100%; width: 33%; background: linear-gradient(90deg, var(--primary), #1a5ea3); border-radius: 10px; transition: 0.5s ease-in-out; }
+.file-input-wrapper{border:2px dashed #ccc;padding:15px;border-radius:10px;text-align:center;margin-top:10px;cursor:pointer}
+#screenshot-preview{max-width:100%;display:none;margin-top:10px}
 
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-.modal { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-.modal h3 { color: var(--error); margin-top: 0; }
-.modal p { line-height: 1.5; font-size: 15px; }
-.modal button { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; margin-top: 15px; font-weight: bold; width: 100%; }
+.loading-spinner{
+border:3px solid #f3f3f3;
+border-top:3px solid var(--primary);
+border-radius:50%;
+width:18px;height:18px;
+animation:spin 1s linear infinite;
+display:inline-block;
+margin-right:6px;
+}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-#step2, #step3, #thankyouPage, #trackPage { display: none; }
+#step2,#step3,#thankyouPage,#trackPage{display:none}
 
-.payment-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-.qr-container { background: white; padding: 15px; display: inline-block; border: 1px solid #eee; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 10px 0; }
-.qr-container img { max-width: 100%; height: auto; }
-.payment-instruction { font-size: 14px; color: #1a5ea3; font-weight: 600; margin-bottom: 15px; padding: 12px; background: #f0f7ff; border-radius: 8px; line-height: 1.4; }
+.success-check{font-size:60px;color:var(--success)}
 
-.upi-apps { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-.upi-apps div { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; font-weight: bold; width: 60px; }
-.upi-apps img { width: 40px; height: 40px; margin-bottom: 4px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); background: #fff; }
+.info-list{text-align:left;background:#f9f9f9;padding:10px;border-radius:8px}
+.info-item{display:flex;justify-content:space-between}
 
-.file-input-wrapper { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.3s; }
-.file-input-wrapper:hover { border-color: var(--primary); background: #f0f7ff; }
-#screenshot-preview { max-width: 100%; max-height: 200px; margin-top: 15px; border-radius: 8px; display: none; border: 1px solid #ddd; margin-left: auto; margin-right: auto; }
-
-/* Thank You Page Styling */
-.success-card { text-align: center; display: block; width: 100%; }
-.success-check { font-size: 60px; color: var(--success); margin-bottom: 15px; animation: bounceIn 0.8s ease; }
-@keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); opacity: 1; } }
-
-.id-badge { background: #fff; border: 2px dashed var(--primary); border-radius: 12px; padding: 20px; margin: 20px 0; position: relative; }
-.id-badge::before { content: "BOOKING ID"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 2px 12px; font-size: 10px; font-weight: bold; border-radius: 20px; }
-
-.info-list { text-align: left; background: #f9f9f9; padding: 15px; border-radius: 10px; margin: 20px 0; font-size: 14px; border: 1px solid #eee; }
-.info-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #ddd; padding-bottom: 4px; gap: 10px; }
-.info-item strong { text-align: right; }
-.info-item:last-child { border: none; }
-
-.next-steps { text-align: left; margin: 25px 0; }
-.next-steps h4 { margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #e3ecff; display: inline-block; }
-.step-point { display: flex; gap: 12px; margin-bottom: 12px; font-size: 14px; color: #444; }
-.step-num { background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; font-weight: bold; }
-
-footer { text-align: center; padding: 30px 15px; background: #e9edf2; margin-top: 40px; font-size: 13px; color: #666; border-top: 1px solid #ddd; }
-
-.loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+footer{text-align:center;padding:15px;color:#666}
 </style>
 </head>
 
 <body>
 
 <header>
-<img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Logo">
+<img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png">
 <div>
-<h2>Plate Service Portal</h2>
-<p>Professional HSRP Facilitator</p>
+<h3>Plate Service Portal</h3>
+<small>HSRP Facilitator</small>
 </div>
 </header>
 
 <nav>
-<button id="navNew">NEW BOOKING</button>
-<button id="navTrack">TRACK STATUS</button>
+<button onclick="location.reload()">NEW BOOKING</button>
+<button onclick="showTrack()">TRACK STATUS</button>
 </nav>
 
-<!-- Alert Modal -->
-<div class="modal-overlay" id="valModal">
-    <div class="modal">
-        <h3>Required Information</h3>
-        <p id="modalMsg">Please fill in the required fields to continue.</p>
-        <button onclick="document.getElementById('valModal').style.display='none'">Understand</button>
-    </div>
+<div class="container">
+
+<!-- TRACK -->
+<div id="trackPage">
+<h3>Track Application</h3>
+<input id="trackId" placeholder="HSRP123456">
+<button class="btn-next" onclick="trackOrder()">Check Status</button>
+<div id="trackResult"></div>
 </div>
 
-<div class="container" id="mainContainer">
-    <!-- Tracking Page -->
-    <div id="trackPage">
-        <h2>Track Application</h2>
-        <p style="font-size: 14px; color: #666;">Enter your Application ID:</p>
-        <input type="text" id="trackId" placeholder="e.g. HSRP123456" style="text-transform: uppercase;">
-        <button class="btn-next" id="btnTrack">Check Status</button>
-        <div id="trackResult"></div>
-    </div>
+<div id="bookingBox">
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
-    <!-- Booking Wizard -->
-    <div id="bookingBox">
-        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<!-- STEP 1 -->
+<div id="step1">
+<div class="step-title">Step 1: Vehicle Info</div>
+<div class="form-grid">
 
-        <!-- STEP 1 -->
-        <div id="step1">
-            <div class="step-title">Step 1: Vehicle Information</div>
-            <div class="form-grid">
-                <div>
-                    <label>Vehicle Category</label>
-                    <select id="vehicleType" data-name="Vehicle Category">
-                        <option value="">Select Category</option>
-                        <optgroup label="Private Vehicles">
-                            <option>Two Wheeler (Scooter/Bike)</option>
-                            <option>Four Wheeler (Car/SUV)</option>
-                            <option>Three Wheeler (Private)</option>
-                            <option>Electric Vehicle (Green Plate)</option>
-                        </optgroup>
-                        <optgroup label="Commercial Vehicles">
-                            <option>Two Wheeler (Delivery)</option>
-                            <option>Four Wheeler (Taxi/Cab)</option>
-                            <option>Heavy Motor Vehicle (Truck/Bus)</option>
-                            <option>Three Wheeler (Auto/Tempo)</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div>
-                    <label>State / UT</label>
-                    <select id="stateSelect" data-name="State">
-                        <option value="">Select State</option>
-                        <optgroup label="States">
-                            <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
-                            <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
-                            <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
-                            <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
-                            <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
-                            <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
-                            <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
-                            <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
-                            <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
-                            <option>West Bengal</option>
-                        </optgroup>
-                        <optgroup label="Union Territories">
-                            <option>Andaman & Nicobar</option><option>Chandigarh</option>
-                            <option>Dadra & Nagar Haveli</option><option>Daman & Diu</option>
-                            <option>Delhi</option><option>Jammu & Kashmir</option>
-                            <option>Ladakh</option><option>Lakshadweep</option><option>Puducherry</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div>
-                    <label>Registration Number</label>
-                    <input id="regNo" placeholder="DL01AB1234" style="text-transform: uppercase;" data-name="Registration Number">
-                </div>
-                <div>
-                    <label>Chassis No (Last 5)</label>
-                    <input id="chassis" maxlength="5" placeholder="Last 5 digits" data-name="Chassis Number">
-                </div>
-                <div>
-                    <label>Engine No (Last 5)</label>
-                    <input id="engine" maxlength="5" placeholder="Last 5 digits" data-name="Engine Number">
-                </div>
-            </div>
-            <button class="btn-next" id="btnGoStep2">Continue</button>
-        </div>
-
-        <!-- STEP 2 -->
-        <div id="step2">
-            <div class="step-title">Step 2: Owner Information</div>
-            <div class="form-grid">
-                <div style="grid-column: 1/-1;">
-                    <label>Full Name (As per RC)</label>
-                    <input id="uName" placeholder="Enter full name" data-name="Full Name">
-                </div>
-                <div>
-                    <label>Mobile Number</label>
-                    <input id="uMob" type="tel" maxlength="10" placeholder="10-digit mobile" data-name="Mobile Number">
-                </div>
-                <div>
-                    <label>Email Address</label>
-                    <input id="uEmail" type="email" placeholder="example@mail.com" data-name="Email">
-                </div>
-                <div style="grid-column: 1/-1;">
-                    <label>Shipping Address</label>
-                    <textarea id="uAddr" rows="3" placeholder="House no, Locality, Pincode" data-name="Address"></textarea>
-                </div>
-            </div>
-            <button class="btn-next" id="btnGoStep3">Proceed to Payment</button>
-            <button class="btn-next" id="btnStep2Back" style="background:#666; margin-top:5px;">Go Back</button>
-        </div>
-
-        <!-- STEP 3 -->
-        <div id="step3">
-            <div class="step-title">Step 3: Verification & Payment</div>
-            <div class="payment-card">
-                <p class="payment-instruction">Scan QR code to pay via UPI Apps</p>
-                <div class="qr-container">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=test@upi&pn=PlateService&cu=INR" alt="QR">
-                </div>
-                <div class="upi-apps">
-                    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png"><span>PhonePe</span></div>
-                    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png"><span>G-Pay</span></div>
-                    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png"><span>Paytm</span></div>
-                </div>
-
-                <div style="margin-top:20px; text-align:left;">
-                    <label>Upload Payment Proof (Screenshot)</label>
-                    <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
-                        <span id="file-label">Attach payment screenshot</span>
-                        <input type="file" id="screenshot" accept="image/*" style="display:none">
-                        <br><img id="screenshot-preview">
-                    </div>
-                </div>
-            </div>
-            <button class="btn-next" id="btnSubmit" disabled>Complete Submission</button>
-            <div id="submitStatus" style="margin-top:10px; text-align:center;"></div>
-        </div>
-    </div>
-
-    <!-- THANK YOU PAGE -->
-    <div id="thankyouPage" class="success-card">
-        <div class="success-check">✔</div>
-        <h2 style="color:var(--success); margin-bottom:5px;">Booking Successful!</h2>
-        <p style="color:var(--text-light); margin-top:0;">Your application has been received successfully.</p>
-        
-        <div class="id-badge">
-            <h2 id="finalId" style="margin:5px 0; color:var(--primary); letter-spacing:2px; font-size: 28px;"></h2>
-        </div>
-
-        <div class="info-list">
-            <div class="info-item"><span>Vehicle No:</span><strong id="displayReg"></strong></div>
-            <div class="info-item"><span>Owner:</span><strong id="displayOwner"></strong></div>
-            <div class="info-item"><span>Booking Date:</span><strong id="displayDate"></strong></div>
-            <div class="info-item"><span>Payment Status:</span><strong style="color:var(--success);">Verified</strong></div>
-        </div>
-
-        <div class="next-steps">
-            <h4>Process Timeline</h4>
-            <div class="step-point">
-                <div class="step-num">1</div>
-                <div>Verification of documents and payment (approx. 24 hours).</div>
-            </div>
-            <div class="step-point">
-                <div class="step-num">2</div>
-                <div>Manufacturing of your customized HSRP plates.</div>
-            </div>
-            <div class="step-point">
-                <div class="step-num">3</div>
-                <div>Dispatched and delivered within <strong>8-10 working days</strong>.</div>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 10px; flex-direction: column; margin-top:20px;">
-            <button class="btn-next" onclick="location.reload()">Book Another Vehicle</button>
-        </div>
-    </div>
+<div>
+<label>Vehicle Category</label>
+<select id="vehicleType">
+<option value="">Select</option>
+<option>Two Wheeler</option>
+<option>Four Wheeler</option>
+<option>Electric Vehicle</option>
+<option>Commercial Vehicle</option>
+</select>
+<div class="error-text" id="errVehicle"></div>
 </div>
 
-<footer>
-    <p>© 2026 Plate Service Portal<br><small>Verified Registration Services</small></p>
-</footer>
+<div>
+<label>State / UT</label>
+<select id="stateSelect">
+<option value="">Select State</option>
+<option>Andhra Pradesh</option>
+<option>Arunachal Pradesh</option>
+<option>Assam</option>
+<option>Bihar</option>
+<option>Chhattisgarh</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Mizoram</option>
+<option>Nagaland</option>
+<option>Odisha</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
+<option>Uttar Pradesh</option>
+<option>Uttarakhand</option>
+<option>West Bengal</option>
+<option>Andaman and Nicobar Islands</option>
+<option>Chandigarh</option>
+<option>Dadra and Nagar Haveli and Daman and Diu</option>
+<option>Delhi</option>
+<option>Jammu and Kashmir</option>
+<option>Ladakh</option>
+<option>Lakshadweep</option>
+<option>Puducherry</option>
+</select>
+<div class="error-text" id="errState"></div>
+</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<div>
+<label>Vehicle No</label>
+<input id="regNo" style="text-transform:uppercase">
+<div class="error-text" id="errReg"></div>
+</div>
 
-// Boilerplate for firebase config
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{"apiKey":"fake-key","authDomain":"fake.firebaseapp.com","projectId":"fake-proj"}');
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'hsrp-web-portal';
+<div>
+<label>Chassis (Last 5)</label>
+<input id="chassis" maxlength="5">
+<div class="error-text" id="errChassis"></div>
+</div>
 
-let currentUser = null;
+<div>
+<label>Engine (Last 5)</label>
+<input id="engine" maxlength="5">
+<div class="error-text" id="errEngine"></div>
+</div>
 
-const initAuth = async () => {
-    try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-            await signInAnonymously(auth);
-        }
-    } catch(e) { console.warn("Auth initialization..."); }
+</div>
+<button class="btn-next" onclick="goStep2()">Continue</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2">
+<div class="step-title">Step 2: Owner Info</div>
+<div class="form-grid">
+<div>
+<input id="uName" placeholder="Full Name">
+<div class="error-text" id="errName"></div>
+</div>
+<div>
+<input id="uMob" placeholder="Mobile">
+<div class="error-text" id="errMob"></div>
+</div>
+<div>
+<input id="uEmail" placeholder="Email">
+<div class="error-text" id="errEmail"></div>
+</div>
+<div>
+<textarea id="uAddr" placeholder="Address"></textarea>
+<div class="error-text" id="errAddr"></div>
+</div>
+</div>
+<button class="btn-next" onclick="goStep3()">Proceed to Payment</button>
+<button class="btn-next" style="background:#666" onclick="backStep1()">Back</button>
+</div>
+
+<!-- STEP 3 PAYMENT -->
+<div id="step3">
+<div class="step-title">Secure Payment</div>
+
+<div class="payment-card">
+<h3>Scan & Pay via UPI</h3>
+<p>Amount: <b>₹599</b></p>
+
+<div class="qr-container">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay">
+</div>
+
+<div class="upi-apps">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo.svg">
+</div>
+
+<p style="font-size:13px;margin-top:8px;">Upload payment screenshot for verification</p>
+
+<div class="file-input-wrapper" onclick="screenshot.click()">
+Click to Upload Screenshot
+<input type="file" id="screenshot" hidden>
+<img id="screenshot-preview">
+</div>
+
+</div>
+
+<button class="btn-next" id="btnSubmit" onclick="submitForm()">Complete Submission</button>
+</div>
+</div>
+
+<!-- THANK YOU -->
+<div id="thankyouPage">
+<div class="success-check">✔</div>
+<h2>Booking Successful</h2>
+<h3 id="finalId"></h3>
+
+<div class="info-list">
+<div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
+<div class="info-item"><span>Owner:</span><b id="displayOwner"></b></div>
+<div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
+</div>
+
+<h4>Process Timeline</h4>
+<p>✔ Details Verification (24 hrs)</p>
+<p>✔ Plate Manufacturing</p>
+<p>✔ Delivery within <b>8–10 working days</b></p>
+
+<button class="btn-next" onclick="location.reload()">Book Another</button>
+</div>
+
+</div>
+
+<footer>© 2026 Plate Service Portal</footer>
+
+<script>
+let orders={};
+regNo.addEventListener("input",()=>{regNo.value=regNo.value.toUpperCase()});
+
+function clearErrors(){
+document.querySelectorAll(".error-text").forEach(e=>e.innerText="");
+document.querySelectorAll("input,select,textarea").forEach(e=>e.classList.remove("error"));
+}
+
+function goStep2(){
+clearErrors();
+let valid=true;
+
+if(!vehicleType.value){errVehicle.innerText="Select Vehicle Category";vehicleType.classList.add("error");valid=false;}
+if(!stateSelect.value){errState.innerText="Select State";stateSelect.classList.add("error");valid=false;}
+if(!regNo.value){errReg.innerText="Enter Vehicle Number";regNo.classList.add("error");valid=false;}
+if(!chassis.value){errChassis.innerText="Enter Chassis No";chassis.classList.add("error");valid=false;}
+if(!engine.value){errEngine.innerText="Enter Engine No";engine.classList.add("error");valid=false;}
+
+if(!valid) return;
+
+step1.style.display="none";
+step2.style.display="block";
+progressBar.style.width="66%";
+}
+
+function goStep3(){
+clearErrors();
+let valid=true;
+
+if(!uName.value){errName.innerText="Enter Name";uName.classList.add("error");valid=false;}
+if(!uMob.value){errMob.innerText="Enter Mobile";uMob.classList.add("error");valid=false;}
+if(!uEmail.value){errEmail.innerText="Enter Email";uEmail.classList.add("error");valid=false;}
+if(!uAddr.value){errAddr.innerText="Enter Address";uAddr.classList.add("error");valid=false;}
+
+if(!valid) return;
+
+step2.style.display="none";
+step3.style.display="block";
+progressBar.style.width="100%";
+}
+
+function backStep1(){
+step2.style.display="none";
+step1.style.display="block";
+progressBar.style.width="33%";
+}
+
+screenshot.onchange=e=>{
+let r=new FileReader();
+r.onload=()=>{screenshot-preview.src=r.result;screenshot-preview.style.display="block";}
+r.readAsDataURL(e.target.files[0]);
 };
 
-onAuthStateChanged(auth, (user) => { currentUser = user; });
-initAuth();
+function submitForm(){
+if(!screenshot.files.length){alert("Upload payment screenshot");return;}
 
-const validate = (ids) => {
-    let missing = [];
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.classList.remove('input-error');
-        if(!el.value.trim()) {
-            const fieldName = el.getAttribute('data-name') || id;
-            missing.push(`<strong>${fieldName}</strong>`);
-            el.classList.add('input-error');
-        }
-    });
+btnSubmit.disabled=true;
+btnSubmit.innerHTML='<span class="loading-spinner"></span>Submitting...';
 
-    if(missing.length > 0) {
-        document.getElementById('modalMsg').innerHTML = "Please provide the following required information to continue: <br><br>" + missing.join(", ");
-        document.getElementById('valModal').style.display = 'flex';
-        return false;
-    }
-    return true;
-};
+setTimeout(()=>{
+let id="HSRP"+Math.floor(100000+Math.random()*900000);
+orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
 
-// UI Navigation
-document.getElementById('btnGoStep2').onclick = () => {
-    if(validate(['vehicleType', 'stateSelect', 'regNo', 'chassis', 'engine'])) {
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-        document.getElementById('progressBar').style.width = '66%';
-        window.scrollTo(0, 0);
-    }
-};
+finalId.innerText=id;
+displayReg.innerText=regNo.value;
+displayOwner.innerText=uName.value;
+displayDate.innerText=new Date().toDateString();
 
-document.getElementById('btnGoStep3').onclick = () => {
-    if(validate(['uName', 'uMob', 'uEmail', 'uAddr'])) {
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
-        document.getElementById('progressBar').style.width = '100%';
-        window.scrollTo(0, 0);
-    }
-};
+bookingBox.style.display="none";
+thankyouPage.style.display="block";
+},1500);
+}
 
-document.getElementById('btnStep2Back').onclick = () => {
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('progressBar').style.width = '33%';
-    window.scrollTo(0, 0);
-};
+function showTrack(){
+bookingBox.style.display="none";
+thankyouPage.style.display="none";
+trackPage.style.display="block";
+}
 
-document.getElementById('screenshot').onchange = (e) => {
-    const file = e.target.files[0];
-    if(file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            document.getElementById('screenshot-preview').src = ev.target.result;
-            document.getElementById('screenshot-preview').style.display = 'block';
-            document.getElementById('file-label').innerText = "Screenshot Selected ✔";
-            document.getElementById('btnSubmit').disabled = false;
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
-document.getElementById('btnSubmit').onclick = async () => {
-    const btn = document.getElementById('btnSubmit');
-    const statusDiv = document.getElementById('submitStatus');
-    
-    btn.disabled = true;
-    statusDiv.innerHTML = '<div class="loading-spinner"></div> Submitting...';
-    
-    try {
-        if (!auth.currentUser) await initAuth();
-        
-        const orderId = "HSRP" + Math.floor(100000 + Math.random() * 900000);
-        const registration = document.getElementById('regNo').value.toUpperCase();
-        const ownerName = document.getElementById('uName').value;
-        const today = new Date().toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'});
-        
-        const bookingData = {
-            orderId: orderId,
-            vehicle: registration,
-            owner: ownerName,
-            mobile: document.getElementById('uMob').value,
-            email: document.getElementById('uEmail').value,
-            address: document.getElementById('uAddr').value,
-            category: document.getElementById('vehicleType').value,
-            state: document.getElementById('stateSelect').value,
-            status: "Pending Verification",
-            createdAt: serverTimestamp()
-        };
-
-        // Rule 1: Correct path structure
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), bookingData);
-        
-        document.getElementById('displayReg').innerText = registration;
-        document.getElementById('displayOwner').innerText = ownerName;
-        document.getElementById('displayDate').innerText = today;
-        document.getElementById('finalId').innerText = orderId;
-        
-        document.getElementById('bookingBox').style.display = 'none';
-        document.getElementById('thankyouPage').style.display = 'block';
-        window.scrollTo(0,0);
-        
-    } catch (error) {
-        console.error(error);
-        statusDiv.innerHTML = `<span style="color:var(--error);">Error saving data. Please check connection.</span>`;
-        btn.disabled = false;
-    }
-};
-
-document.getElementById('btnTrack').onclick = async () => {
-    const tid = document.getElementById('trackId').value.trim().toUpperCase();
-    if(!tid) return;
-    const res = document.getElementById('trackResult');
-    res.innerHTML = "Checking database...";
-    try {
-        const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', tid));
-        if(snap.exists()) {
-            res.innerHTML = `<div style="background:#e8f5e9; padding:15px; border-radius:10px; margin-top:10px; border:1px solid #c8e6c9; font-size: 14px;">
-                Status: <strong style="color:var(--primary);">${snap.data().status}</strong><br>
-                Vehicle: ${snap.data().vehicle}<br>
-                Owner: ${snap.data().owner}
-            </div>`;
-        } else { 
-            res.innerHTML = "<div style='color:red; margin-top:10px; font-size:14px;'>Booking ID not found.</div>"; 
-        }
-    } catch(e) { 
-        res.innerHTML = "Connection error."; 
-    }
-};
-
-document.getElementById('navTrack').onclick = () => {
-    document.getElementById('bookingBox').style.display = 'none';
-    document.getElementById('thankyouPage').style.display = 'none';
-    document.getElementById('trackPage').style.display = 'block';
-};
-document.getElementById('navNew').onclick = () => location.reload();
+function trackOrder(){
+let id=trackId.value.toUpperCase();
+if(orders[id]){
+trackResult.innerHTML=`<p>Status: <b>${orders[id].status}</b><br>Vehicle: ${orders[id].vehicle}</p>`;
+}else{
+trackResult.innerHTML="<p style='color:red'>ID Not Found</p>";
+}
+}
 </script>
 
 </body>
