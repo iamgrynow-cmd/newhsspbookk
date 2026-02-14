@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Plate Service Portal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 :root{
 --primary:#0b3c6d;
@@ -64,7 +63,6 @@ padding:12px;
 margin-bottom:15px;
 border-left:5px solid var(--primary);
 font-weight:bold;
-text-align:center;
 }
 
 .form-grid{
@@ -122,15 +120,14 @@ padding:18px;
 border-radius:12px;
 background:#fafafa;
 text-align:center;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:10px;
 }
 
 .qr-container img{
 width:180px;
-margin:10px 0;
+margin:15px 0;
+border:2px solid #0b3c6d;
+border-radius:12px;
+padding:5px;
 }
 
 .upi-apps{
@@ -140,7 +137,7 @@ gap:15px;
 margin-top:10px;
 }
 
-.upi-apps img{width:45px}
+.upi-apps img{width:45px;}
 
 .file-input-wrapper{
 border:2px dashed #0b3c6d;
@@ -151,10 +148,9 @@ margin-top:15px;
 cursor:pointer;
 font-weight:bold;
 color:#0b3c6d;
-width:100%;
 }
 
-#step2,#step3,#thankyouPage,#trackPage{display:none}
+#step2,#step3,#thankyouPage,#trackPage{display:none;}
 
 .success-check{
 font-size:70px;
@@ -196,11 +192,9 @@ font-size:14px;
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
 .qr-container img{width:150px;}
-.payment-card{text-align:center;}
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -221,7 +215,7 @@ nav button{font-size:14px;}
 <!-- TRACK -->
 <div id="trackPage">
 <h3>Track Application</h3>
-<input id="trackId" placeholder="HSRP123456">
+<input id="trackId" placeholder="HSRPXXXXXX">
 <button class="btn-next" onclick="trackOrder()">Check Status</button>
 <div id="trackResult" style="margin-top:15px;"></div>
 </div>
@@ -285,7 +279,7 @@ nav button{font-size:14px;}
 <option>Puducherry</option>
 </select>
 
-<input id="regNo" placeholder="Vehicle Registration Number">
+<input id="regNo" placeholder="Vehicle Number">
 <input id="chassis" placeholder="Chassis Number Last 5 Digits" maxlength="5">
 <input id="engine" placeholder="Engine Number Last 5 Digits" maxlength="5">
 
@@ -312,19 +306,21 @@ nav button{font-size:14px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>Scan & Pay with any UPI app</h3>
+<h3 style="font-weight:bold; text-align:center;">Scan & Pay with any UPI app</h3>
 
-<div class="qr-container">
-<img src="qr.png" alt="QR Code">
+<div class="qr-container" style="display:flex; justify-content:center; margin:15px 0;">
+  <img src="qr.png" alt="QR Code">
 </div>
 
 <div class="upi-apps">
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
-<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay">
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo.svg/256px-Paytm_Logo.svg.png" alt="Paytm">
 </div>
 
-<p style="margin-top:10px;font-size:15px;">After payment, upload your payment screenshot below for verification.</p>
+<p style="margin-top:12px; font-size:16px; text-align:center;">
+After payment, upload your payment screenshot below for verification.
+</p>
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Upload Payment Screenshot
@@ -344,16 +340,18 @@ Upload Payment Screenshot
 <div class="success-check">✔</div>
 <h2 style="text-align:center;">Booking Successful</h2>
 <p style="text-align:center;">Application ID</p>
-<h3 id="finalId" style="text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight);"></h3>
+<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight);"></h3>
 
 <div class="info-list">
-<div class="info-item"><span>Owner:</span><b id="displayOwner"></b> <small>(Privacy Protocol)</small></div>
+<div class="info-item"><span>Owner:</span><b id="displayOwner">[Privacy Protocol]</b></div>
 </div>
 
 <h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
-<p style=" background:#fff0f0; padding:10px; border-radius:10px; font-weight:bold; color:#ea4335; border-left:5px solid #ea4335; ">✔ Delivery within 8–10 working days</p>
+<p style=" background:#fff0f0; padding:10px; border-radius:10px; font-weight:bold; color:var(--highlight); border-left:5px solid var(--highlight); ">
+✔ Delivery within 8–10 working days
+</p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -391,8 +389,10 @@ document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
 orders[id]={status:"Pending Verification",owner:uName.value};
+
 finalId.innerText=id;
-displayOwner.innerText=uName.value;
+displayOwner.innerText="[Privacy Protocol]";
+
 bookingBox.style.display="none";
 thankyouPage.style.display="block";
 }
@@ -405,13 +405,12 @@ trackPage.style.display="block";
 
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
-if(!orders[id]){
-id="HSRP"+Math.floor(100000+Math.random()*900000);
-orders[id]={status:"Pending Verification",owner:"Privacy Protocol"};
-}
+if(!id) return;
+let randomId = "HSRP"+Math.floor(100000+Math.random()*900000);
 trackResult.innerHTML=`<div class="info-list">
-<div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
-<div class="info-item"><span>Status:</span><b>${orders[id].status}</b></div>
+<div class="info-item"><span>Status:</span><b>Pending</b></div>
+<div class="info-item"><span>Owner:</span><b>[Privacy Protocol]</b></div>
+<div class="info-item"><span>Application ID:</span><b>${randomId}</b></div>
 </div>`;
 }
 </script>
