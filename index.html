@@ -10,6 +10,7 @@
 --primary:#0b3c6d;
 --bg:#f2f6fb;
 --success:#28a745;
+--highlight:#ea4335;
 }
 
 body{
@@ -35,7 +36,7 @@ header img{height:40px}
 nav{
 background:#003366;
 display:flex;
-justify-content:center
+justify-content:center;
 }
 
 nav button{
@@ -45,7 +46,7 @@ border:none;
 padding:12px 18px;
 font-weight:bold;
 font-size:15px;
-cursor:pointer
+cursor:pointer;
 }
 
 .container{
@@ -54,7 +55,7 @@ margin:15px auto;
 background:#fff;
 padding:20px;
 border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,.1)
+box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
 
 .step-title{
@@ -68,7 +69,7 @@ font-weight:bold;
 .form-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px
+gap:12px;
 }
 
 @media(max-width:600px){
@@ -97,21 +98,21 @@ border-radius:10px;
 width:100%;
 margin-top:12px;
 font-size:17px;
-cursor:pointer
+cursor:pointer;
 }
 
 .progress{
 height:8px;
 background:#ddd;
 border-radius:10px;
-margin-bottom:15px
+margin-bottom:15px;
 }
 
 .progress-bar{
 height:100%;
 width:33%;
 background:linear-gradient(90deg,#0b3c6d,#1a5ea3);
-transition:width .3s
+transition:width .3s;
 }
 
 .payment-card{
@@ -119,19 +120,14 @@ border:1px solid #ddd;
 padding:18px;
 border-radius:12px;
 background:#fafafa;
-text-align:center
-}
-
-.qr-container img{
-width:180px;
-margin:15px 0;
+text-align:center;
 }
 
 .upi-apps{
 display:flex;
 justify-content:center;
 gap:15px;
-margin-top:10px
+margin-top:10px;
 }
 
 .upi-apps img{width:45px}
@@ -146,6 +142,8 @@ cursor:pointer;
 font-weight:bold;
 color:#0b3c6d;
 }
+
+#paymentVerified{display:none; font-weight:bold; color:var(--success); margin-top:10px;}
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
 
@@ -188,7 +186,6 @@ font-size:14px;
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
-.qr-container img{width:150px;}
 }
 </style>
 </head>
@@ -227,6 +224,7 @@ nav button{font-size:14px;}
 <div class="step-title">Step 1: Vehicle Information</div>
 <div class="form-grid">
 
+<!-- Vehicle Category and State/UT on top -->
 <select id="vehicleType">
 <option value="">Select Vehicle Category</option>
 <option>Two Wheeler</option>
@@ -239,42 +237,48 @@ nav button{font-size:14px;}
 
 <select id="stateSelect">
 <option value="">Select State / UT</option>
-<option>Delhi</option>
-<option>Maharashtra</option>
-<option>Uttar Pradesh</option>
-<option>Bihar</option>
-<option>Punjab</option>
-<option>Rajasthan</option>
-<option>Haryana</option>
-<option>Gujarat</option>
-<option>Tamil Nadu</option>
-<option>Karnataka</option>
-<option>West Bengal</option>
-<option>Telangana</option>
-<option>Kerala</option>
-<option>Odisha</option>
-<option>Madhya Pradesh</option>
-<option>Chhattisgarh</option>
-<option>Jharkhand</option>
+<option>Andhra Pradesh</option>
+<option>Arunachal Pradesh</option>
 <option>Assam</option>
+<option>Bihar</option>
+<option>Chhattisgarh</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
 <option>Manipur</option>
 <option>Meghalaya</option>
 <option>Mizoram</option>
 <option>Nagaland</option>
+<option>Odisha</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
 <option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
 <option>Tripura</option>
+<option>Uttar Pradesh</option>
 <option>Uttarakhand</option>
+<option>West Bengal</option>
+<option>Delhi</option>
 <option>Jammu and Kashmir</option>
 <option>Ladakh</option>
 <option>Puducherry</option>
 <option>Chandigarh</option>
 <option>Lakshadweep</option>
 <option>Andaman and Nicobar Islands</option>
+<option>Dadra and Nagar Haveli and Daman and Diu</option>
 </select>
 
-<input id="regNo" placeholder="Vehicle Number">
-<input id="chassis" placeholder="Chassis Last 5 Digits" maxlength="5">
-<input id="engine" placeholder="Engine Last 5 Digits" maxlength="5">
+<!-- Vehicle Details -->
+<input id="regNo" placeholder="Vehicle Registration Number" style="text-transform:uppercase">
+<input id="chassis" placeholder="Chassis Number (Last 5 Digits)" maxlength="5">
+<input id="engine" placeholder="Engine Number (Last 5 Digits)" maxlength="5">
 
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
@@ -299,11 +303,10 @@ nav button{font-size:14px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>Scan QR Code & Make Payment</h3>
-
-<div class="qr-container">
-<img src="qr.png">
-</div>
+<h3>1️⃣ Open PhonePe / Google Pay / Paytm<br>
+2️⃣ Scan the QR Code below<br>
+3️⃣ Make Payment<br>
+4️⃣ Upload Payment Screenshot</h3>
 
 <div class="upi-apps">
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
@@ -311,14 +314,12 @@ nav button{font-size:14px;}
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo.svg/256px-Paytm_Logo.svg.png" alt="Paytm">
 </div>
 
-<p style="margin-top:10px;font-size:15px;">
-After payment, upload your payment screenshot below for verification.
-</p>
-
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Upload Payment Screenshot
 <input type="file" id="screenshot" hidden>
 </div>
+
+<div id="paymentVerified">Payment Verified ✔</div>
 
 </div>
 
@@ -333,7 +334,7 @@ Upload Payment Screenshot
 <div class="success-check">✔</div>
 <h2 style="text-align:center;">Booking Successful</h2>
 <p style="text-align:center;">Application ID</p>
-<h3 id="finalId" style=" text-align:center; background:#e9f9ee; color:#0b3c6d; padding:15px; border-radius:12px; font-size:24px; font-weight:bold; border:3px solid #61c861; box-shadow:0 0 10px rgba(97,200,97,0.6); letter-spacing:1px; "></h3>
+<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight); "></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -344,7 +345,7 @@ Upload Payment Screenshot
 <h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
-<p style=" background:#ffe6e3; padding:15px; border-radius:12px; font-weight:900; color:#ea4335; border-left:6px solid #ea4335; box-shadow:0 0 8px rgba(234,67,53,0.5); font-size:18px; "> ✔ Delivery within 8–10 working days </p>
+<p style=" background:#fff0f0; padding:10px; border-radius:10px; font-weight:bold; color:var(--highlight); border-left:5px solid var(--highlight); "> ✔ Delivery within 8–10 working days </p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -377,6 +378,7 @@ progressBar.style.width="33%";
 
 document.getElementById("screenshot").onchange=()=>{
 document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔";
+document.getElementById("paymentVerified").style.display="block";
 };
 
 function submitForm(){
@@ -414,4 +416,3 @@ trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
 
 </body>
 </html>
-
