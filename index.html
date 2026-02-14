@@ -34,7 +34,6 @@ input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid
 .progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3);transition:width 0.3s ease;}
 
 .payment-card{border:1px solid #ddd;padding:15px;border-radius:12px;background:#fafafa;text-align:center}
-.payment-card h3{margin:5px 0}
 .qr-container img{width:160px;margin:10px 0}
 
 .upi-apps{display:flex;justify-content:center;gap:15px;margin-top:10px}
@@ -47,7 +46,6 @@ border-radius:10px;
 text-align:center;
 margin-top:10px;
 cursor:pointer;
-font-size:14px;
 }
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
@@ -64,7 +62,6 @@ footer{text-align:center;padding:15px;color:#666}
 .container{margin:10px;padding:15px;}
 header h3{font-size:16px;}
 nav button{font-size:13px;padding:8px;}
-.payment-card{padding:10px;}
 .qr-container img{width:140px;}
 }
 </style>
@@ -87,6 +84,7 @@ nav button{font-size:13px;padding:8px;}
 
 <div class="container">
 
+<!-- TRACK -->
 <div id="trackPage">
 <h3>Track Application</h3>
 <input id="trackId" placeholder="HSRP123456" style="text-transform:uppercase">
@@ -117,48 +115,64 @@ nav button{font-size:13px;padding:8px;}
 <option>Electric Commercial Vehicle (EV)</option>
 </optgroup>
 </select>
-<div class="error-text" id="errVehicle"></div>
 </div>
 
 <div>
 <label>State / UT</label>
 <select id="stateSelect">
-<option value="">Select State</option>
+<option value="">Select State / UT</option>
 <option>Andhra Pradesh</option>
 <option>Arunachal Pradesh</option>
 <option>Assam</option>
 <option>Bihar</option>
 <option>Chhattisgarh</option>
-<option>Delhi</option>
+<option>Goa</option>
 <option>Gujarat</option>
 <option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jharkhand</option>
 <option>Karnataka</option>
+<option>Kerala</option>
+<option>Madhya Pradesh</option>
 <option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Mizoram</option>
+<option>Nagaland</option>
+<option>Odisha</option>
 <option>Punjab</option>
 <option>Rajasthan</option>
+<option>Sikkim</option>
 <option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
 <option>Uttar Pradesh</option>
+<option>Uttarakhand</option>
 <option>West Bengal</option>
+<option>Andaman and Nicobar Islands</option>
+<option>Chandigarh</option>
+<option>Dadra and Nagar Haveli and Daman and Diu</option>
+<option>Delhi (NCT)</option>
+<option>Jammu and Kashmir</option>
+<option>Ladakh</option>
+<option>Lakshadweep</option>
+<option>Puducherry</option>
 </select>
-<div class="error-text" id="errState"></div>
 </div>
 
 <div>
 <label>Vehicle No</label>
-<input id="regNo" placeholder="DL01AB1234" style="text-transform:uppercase">
-<div class="error-text" id="errReg"></div>
+<input id="regNo" style="text-transform:uppercase" placeholder="DL01AB1234">
 </div>
 
 <div>
 <label>Chassis (Last 5)</label>
 <input id="chassis" maxlength="5">
-<div class="error-text" id="errChassis"></div>
 </div>
 
 <div>
 <label>Engine (Last 5)</label>
 <input id="engine" maxlength="5">
-<div class="error-text" id="errEngine"></div>
 </div>
 
 </div>
@@ -169,26 +183,10 @@ nav button{font-size:13px;padding:8px;}
 <div id="step2">
 <div class="step-title">Step 2: Owner Info</div>
 <div class="form-grid">
-<div>
-<label>Full Name</label>
-<input id="uName">
-<div class="error-text" id="errName"></div>
-</div>
-<div>
-<label>Mobile Number</label>
-<input id="uMob" maxlength="10">
-<div class="error-text" id="errMob"></div>
-</div>
-<div>
-<label>Email</label>
-<input id="uEmail">
-<div class="error-text" id="errEmail"></div>
-</div>
-<div style="grid-column:1/-1;">
-<label>Address</label>
-<textarea id="uAddr"></textarea>
-<div class="error-text" id="errAddr"></div>
-</div>
+<input id="uName" placeholder="Full Name">
+<input id="uMob" placeholder="Mobile Number" maxlength="10">
+<input id="uEmail" placeholder="Email">
+<textarea id="uAddr" placeholder="Complete Address" style="grid-column:1/-1"></textarea>
 </div>
 <button class="btn-next" onclick="goStep3()">Proceed to Payment</button>
 <button class="btn-next" style="background:#666" onclick="backStep1()">Back</button>
@@ -200,7 +198,6 @@ nav button{font-size:13px;padding:8px;}
 
 <div class="payment-card">
 <h3>Scan & Pay via UPI</h3>
-
 <div class="qr-container">
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=hsrp@upi&pn=PlateService">
 </div>
@@ -212,12 +209,10 @@ nav button{font-size:13px;padding:8px;}
 </div>
 
 <p>Upload payment screenshot for verification</p>
-
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Click to Upload Screenshot
 <input type="file" id="screenshot" hidden>
 </div>
-
 </div>
 
 <button class="btn-next" onclick="submitForm()">Complete Submission</button>
@@ -237,7 +232,10 @@ Click to Upload Screenshot
 <div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
 </div>
 
-<p>Delivery within <b>8–10 working days</b></p>
+<h4>Process Timeline</h4>
+<p>✔ Details Verification (24 hrs)</p>
+<p>✔ Plate Manufacturing</p>
+<p>✔ Delivery within <b>8–10 working days</b></p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -248,32 +246,19 @@ Click to Upload Screenshot
 
 <script>
 let orders = {};
-const regInput = document.getElementById("regNo");
 const screenshotInput = document.getElementById("screenshot");
-
-regInput.addEventListener("input", () => {
-    regInput.value = regInput.value.toUpperCase();
-});
 
 screenshotInput.onchange = () => {
  document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded Successfully ✔";
 };
 
 function goStep2(){
-if(!vehicleType.value || !stateSelect.value || !regNo.value || !chassis.value || !engine.value){
-alert("Please fill all fields");
-return;
-}
 step1.style.display="none";
 step2.style.display="block";
 progressBar.style.width="66%";
 }
 
 function goStep3(){
-if(!uName.value || !uMob.value || !uEmail.value || !uAddr.value){
-alert("Please fill all fields");
-return;
-}
 step2.style.display="none";
 step3.style.display="block";
 progressBar.style.width="100%";
@@ -287,11 +272,11 @@ progressBar.style.width="33%";
 
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
+orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
 finalId.innerText=id;
 displayReg.innerText=regNo.value;
 displayOwner.innerText=uName.value;
 displayDate.innerText=new Date().toDateString();
-
 bookingBox.style.display="none";
 thankyouPage.style.display="block";
 }
@@ -303,7 +288,16 @@ trackPage.style.display="block";
 }
 
 function trackOrder(){
-trackResult.innerHTML="<p>Status: Pending Verification</p>";
+let id=document.getElementById("trackId").value.toUpperCase();
+if(orders[id]){
+trackResult.innerHTML=`<div class="info-list">
+<div class="info-item"><span>Status:</span><b>${orders[id].status}</b></div>
+<div class="info-item"><span>Vehicle:</span><b>${orders[id].vehicle}</b></div>
+<div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
+</div>`;
+}else{
+trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
+}
 }
 </script>
 
