@@ -14,7 +14,7 @@ header{background:var(--primary);color:#fff;padding:12px;display:flex;gap:10px;a
 header img{height:40px}
 
 nav{background:#003366;display:flex;justify-content:center}
-nav button{color:#fff;background:none;border:none;padding:10px 15px;font-weight:bold}
+nav button{color:#fff;background:none;border:none;padding:10px 15px;font-weight:bold;cursor:pointer}
 
 .container{max-width:600px;margin:15px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
 
@@ -29,15 +29,14 @@ input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid
 .error{border-color:red}
 .error-text{color:red;font-size:12px}
 
-.btn-next{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:8px;width:100%;margin-top:10px;font-size:16px}
+.btn-next{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:8px;width:100%;margin-top:10px;font-size:16px;cursor:pointer}
 
-/* Sticky mobile button */
 @media(max-width:600px){
 .btn-next{position:sticky;bottom:10px;z-index:999}
 }
 
 .progress{height:8px;background:#ddd;border-radius:10px;margin-bottom:15px}
-.progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3)}
+.progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3);transition:width 0.3s ease;}
 
 .payment-card{border:1px solid #ddd;padding:15px;border-radius:12px;background:#fafafa;text-align:center}
 .payment-card h3{margin:5px 0}
@@ -47,7 +46,7 @@ input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid
 .upi-apps img{width:45px}
 
 .file-input-wrapper{border:2px dashed #ccc;padding:15px;border-radius:10px;text-align:center;margin-top:10px;cursor:pointer}
-#screenshot-preview{max-width:100%;display:none;margin-top:10px}
+#screenshot-preview{max-width:100%;display:none;margin-top:10px;border-radius:8px;}
 
 .loading-spinner{
 border:3px solid #f3f3f3;
@@ -57,15 +56,16 @@ width:18px;height:18px;
 animation:spin 1s linear infinite;
 display:inline-block;
 margin-right:6px;
+vertical-align: middle;
 }
 @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
 
-.success-check{font-size:60px;color:var(--success)}
+.success-check{font-size:60px;color:var(--success);text-align:center;}
 
 .info-list{text-align:left;background:#f9f9f9;padding:10px;border-radius:8px}
-.info-item{display:flex;justify-content:space-between}
+.info-item{display:flex;justify-content:space-between;margin-bottom:5px;border-bottom: 1px solid #eee;padding: 5px 0;}
 
 footer{text-align:center;padding:15px;color:#666}
 </style>
@@ -91,9 +91,9 @@ footer{text-align:center;padding:15px;color:#666}
 <!-- TRACK -->
 <div id="trackPage">
 <h3>Track Application</h3>
-<input id="trackId" placeholder="HSRP123456">
+<input id="trackId" placeholder="HSRP123456" style="text-transform:uppercase">
 <button class="btn-next" onclick="trackOrder()">Check Status</button>
-<div id="trackResult"></div>
+<div id="trackResult" style="margin-top:15px;"></div>
 </div>
 
 <div id="bookingBox">
@@ -148,33 +148,27 @@ footer{text-align:center;padding:15px;color:#666}
 <option>Uttar Pradesh</option>
 <option>Uttarakhand</option>
 <option>West Bengal</option>
-<option>Andaman and Nicobar Islands</option>
-<option>Chandigarh</option>
-<option>Dadra and Nagar Haveli and Daman and Diu</option>
 <option>Delhi</option>
 <option>Jammu and Kashmir</option>
-<option>Ladakh</option>
-<option>Lakshadweep</option>
-<option>Puducherry</option>
 </select>
 <div class="error-text" id="errState"></div>
 </div>
 
 <div>
 <label>Vehicle No</label>
-<input id="regNo" style="text-transform:uppercase">
+<input id="regNo" style="text-transform:uppercase" placeholder="DL01AB1234">
 <div class="error-text" id="errReg"></div>
 </div>
 
 <div>
 <label>Chassis (Last 5)</label>
-<input id="chassis" maxlength="5">
+<input id="chassis" maxlength="5" placeholder="12345">
 <div class="error-text" id="errChassis"></div>
 </div>
 
 <div>
 <label>Engine (Last 5)</label>
-<input id="engine" maxlength="5">
+<input id="engine" maxlength="5" placeholder="67890">
 <div class="error-text" id="errEngine"></div>
 </div>
 
@@ -187,18 +181,22 @@ footer{text-align:center;padding:15px;color:#666}
 <div class="step-title">Step 2: Owner Info</div>
 <div class="form-grid">
 <div>
+<label>Full Name</label>
 <input id="uName" placeholder="Full Name">
 <div class="error-text" id="errName"></div>
 </div>
 <div>
-<input id="uMob" placeholder="Mobile">
+<label>Mobile Number</label>
+<input id="uMob" placeholder="Mobile" maxlength="10">
 <div class="error-text" id="errMob"></div>
 </div>
 <div>
+<label>Email Address</label>
 <input id="uEmail" placeholder="Email">
 <div class="error-text" id="errEmail"></div>
 </div>
-<div>
+<div style="grid-column: 1 / -1;">
+<label>Complete Address</label>
 <textarea id="uAddr" placeholder="Address"></textarea>
 <div class="error-text" id="errAddr"></div>
 </div>
@@ -213,10 +211,9 @@ footer{text-align:center;padding:15px;color:#666}
 
 <div class="payment-card">
 <h3>Scan & Pay via UPI</h3>
-<p>Amount: <b>₹599</b></p>
 
 <div class="qr-container">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=hsrp@upi&pn=PlateService">
 </div>
 
 <div class="upi-apps">
@@ -227,7 +224,7 @@ footer{text-align:center;padding:15px;color:#666}
 
 <p style="font-size:13px;margin-top:8px;">Upload payment screenshot for verification</p>
 
-<div class="file-input-wrapper" onclick="screenshot.click()">
+<div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Click to Upload Screenshot
 <input type="file" id="screenshot" hidden>
 <img id="screenshot-preview">
@@ -240,10 +237,11 @@ Click to Upload Screenshot
 </div>
 
 <!-- THANK YOU -->
-<div id="thankyouPage">
+<div id="thankyouPage" style="text-align: center;">
 <div class="success-check">✔</div>
 <h2>Booking Successful</h2>
-<h3 id="finalId"></h3>
+<p style="margin: 0; color: #666; font-size: 14px;">Application ID</p>
+<h3 id="finalId" style="color:var(--primary); margin-top: 5px;"></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -251,10 +249,10 @@ Click to Upload Screenshot
 <div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
 </div>
 
-<h4>Process Timeline</h4>
-<p>✔ Details Verification (24 hrs)</p>
-<p>✔ Plate Manufacturing</p>
-<p>✔ Delivery within <b>8–10 working days</b></p>
+<h4 style="margin-top:20px;">Process Timeline</h4>
+<p style="text-align:left;">✔ Details Verification (24 hrs)</p>
+<p style="text-align:left;">✔ Plate Manufacturing</p>
+<p style="text-align:left;">✔ Delivery within <b>8–10 working days</b></p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -264,92 +262,119 @@ Click to Upload Screenshot
 <footer>© 2026 Plate Service Portal</footer>
 
 <script>
-let orders={};
-regNo.addEventListener("input",()=>{regNo.value=regNo.value.toUpperCase()});
+let orders = {};
+const regInput = document.getElementById("regNo");
+const progressBar = document.getElementById("progressBar");
+const previewImg = document.getElementById("screenshot-preview");
+const screenshotInput = document.getElementById("screenshot");
 
-function clearErrors(){
-document.querySelectorAll(".error-text").forEach(e=>e.innerText="");
-document.querySelectorAll("input,select,textarea").forEach(e=>e.classList.remove("error"));
+regInput.addEventListener("input", () => {
+    regInput.value = regInput.value.toUpperCase();
+});
+
+function clearErrors() {
+    document.querySelectorAll(".error-text").forEach(e => e.innerText = "");
+    document.querySelectorAll("input,select,textarea").forEach(e => e.classList.remove("error"));
 }
 
-function goStep2(){
-clearErrors();
-let valid=true;
+function goStep2() {
+    clearErrors();
+    let valid = true;
+    if (!document.getElementById('vehicleType').value) { valid = false; document.getElementById('errVehicle').innerText = "Required"; }
+    if (!document.getElementById('stateSelect').value) { valid = false; document.getElementById('errState').innerText = "Required"; }
+    if (!document.getElementById('regNo').value) { valid = false; document.getElementById('errReg').innerText = "Required"; }
+    if (!document.getElementById('chassis').value) { valid = false; document.getElementById('errChassis').innerText = "Required"; }
+    if (!document.getElementById('engine').value) { valid = false; document.getElementById('errEngine').innerText = "Required"; }
 
-if(!vehicleType.value){errVehicle.innerText="Select Vehicle Category";vehicleType.classList.add("error");valid=false;}
-if(!stateSelect.value){errState.innerText="Select State";stateSelect.classList.add("error");valid=false;}
-if(!regNo.value){errReg.innerText="Enter Vehicle Number";regNo.classList.add("error");valid=false;}
-if(!chassis.value){errChassis.innerText="Enter Chassis No";chassis.classList.add("error");valid=false;}
-if(!engine.value){errEngine.innerText="Enter Engine No";engine.classList.add("error");valid=false;}
-
-if(!valid) return;
-
-step1.style.display="none";
-step2.style.display="block";
-progressBar.style.width="66%";
+    if (!valid) return;
+    document.getElementById('step1').style.display = "none";
+    document.getElementById('step2').style.display = "block";
+    progressBar.style.width = "66%";
 }
 
-function goStep3(){
-clearErrors();
-let valid=true;
+function goStep3() {
+    clearErrors();
+    let valid = true;
+    if (!document.getElementById('uName').value) { valid = false; document.getElementById('errName').innerText = "Required"; }
+    if (!document.getElementById('uMob').value) { valid = false; document.getElementById('errMob').innerText = "Required"; }
+    if (!document.getElementById('uEmail').value) { valid = false; document.getElementById('errEmail').innerText = "Required"; }
+    if (!document.getElementById('uAddr').value) { valid = false; document.getElementById('errAddr').innerText = "Required"; }
 
-if(!uName.value){errName.innerText="Enter Name";uName.classList.add("error");valid=false;}
-if(!uMob.value){errMob.innerText="Enter Mobile";uMob.classList.add("error");valid=false;}
-if(!uEmail.value){errEmail.innerText="Enter Email";uEmail.classList.add("error");valid=false;}
-if(!uAddr.value){errAddr.innerText="Enter Address";uAddr.classList.add("error");valid=false;}
-
-if(!valid) return;
-
-step2.style.display="none";
-step3.style.display="block";
-progressBar.style.width="100%";
+    if (!valid) return;
+    document.getElementById('step2').style.display = "none";
+    document.getElementById('step3').style.display = "block";
+    progressBar.style.width = "100%";
 }
 
-function backStep1(){
-step2.style.display="none";
-step1.style.display="block";
-progressBar.style.width="33%";
+function backStep1() {
+    document.getElementById('step2').style.display = "none";
+    document.getElementById('step1').style.display = "block";
+    progressBar.style.width = "33%";
 }
 
-screenshot.onchange=e=>{
-let r=new FileReader();
-r.onload=()=>{screenshot-preview.src=r.result;screenshot-preview.style.display="block";}
-r.readAsDataURL(e.target.files[0]);
+screenshotInput.onchange = e => {
+    if (e.target.files && e.target.files[0]) {
+        let r = new FileReader();
+        r.onload = () => {
+            previewImg.src = r.result;
+            previewImg.style.display = "block";
+        }
+        r.readAsDataURL(e.target.files[0]);
+    }
 };
 
-function submitForm(){
-if(!screenshot.files.length){alert("Upload payment screenshot");return;}
+function submitForm() {
+    if (!screenshotInput.files.length) {
+        alert("Bhai, payment screenshot upload karein verification ke liye.");
+        return;
+    }
+    const btnSubmit = document.getElementById('btnSubmit');
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="loading-spinner"></span>Submitting...';
 
-btnSubmit.disabled=true;
-btnSubmit.innerHTML='<span class="loading-spinner"></span>Submitting...';
+    setTimeout(() => {
+        let id = "HSRP" + Math.floor(100000 + Math.random() * 900000);
+        let reg = document.getElementById('regNo').value;
+        let owner = document.getElementById('uName').value;
+        
+        orders[id] = { 
+            status: "Pending Verification", 
+            vehicle: reg, 
+            owner: owner,
+            type: document.getElementById('vehicleType').value,
+            state: document.getElementById('stateSelect').value
+        };
 
-setTimeout(()=>{
-let id="HSRP"+Math.floor(100000+Math.random()*900000);
-orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
+        document.getElementById('finalId').innerText = id;
+        document.getElementById('displayReg').innerText = reg;
+        document.getElementById('displayOwner').innerText = owner;
+        document.getElementById('displayDate').innerText = new Date().toDateString();
 
-finalId.innerText=id;
-displayReg.innerText=regNo.value;
-displayOwner.innerText=uName.value;
-displayDate.innerText=new Date().toDateString();
-
-bookingBox.style.display="none";
-thankyouPage.style.display="block";
-},1500);
+        document.getElementById('bookingBox').style.display = "none";
+        document.getElementById('thankyouPage').style.display = "block";
+    }, 1500);
 }
 
-function showTrack(){
-bookingBox.style.display="none";
-thankyouPage.style.display="none";
-trackPage.style.display="block";
+function showTrack() {
+    document.getElementById('bookingBox').style.display = "none";
+    document.getElementById('thankyouPage').style.display = "none";
+    document.getElementById('trackPage').style.display = "block";
 }
 
-function trackOrder(){
-let id=trackId.value.toUpperCase();
-if(orders[id]){
-trackResult.innerHTML=`<p>Status: <b>${orders[id].status}</b><br>Vehicle: ${orders[id].vehicle}</p>`;
-}else{
-trackResult.innerHTML="<p style='color:red'>ID Not Found</p>";
-}
+function trackOrder() {
+    let id = document.getElementById('trackId').value.toUpperCase();
+    let resDiv = document.getElementById('trackResult');
+    if (orders[id]) {
+        resDiv.innerHTML = `<div class="info-list">
+            <div class="info-item"><span>Status:</span><b style="color:var(--primary)">${orders[id].status}</b></div>
+            <div class="info-item"><span>Application ID:</span><b>${id}</b></div>
+            <div class="info-item"><span>Vehicle No:</span><b>${orders[id].vehicle}</b></div>
+            <div class="info-item"><span>Category:</span><b>${orders[id].type}</b></div>
+            <div class="info-item"><span>State:</span><b>${orders[id].state}</b></div>
+        </div>`;
+    } else {
+        resDiv.innerHTML = "<p style='color:red'>Application ID galat hai ya nahi mili.</p>";
+    }
 }
 </script>
 
