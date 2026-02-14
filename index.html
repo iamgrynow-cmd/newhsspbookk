@@ -10,7 +10,6 @@
 --primary:#0b3c6d;
 --bg:#f2f6fb;
 --success:#28a745;
---highlight:#ea4335;
 }
 
 body{
@@ -123,11 +122,6 @@ background:#fafafa;
 text-align:center
 }
 
-.qr-container img{
-width:180px;
-margin:15px 0;
-}
-
 .upi-apps{
 display:flex;
 justify-content:center;
@@ -189,7 +183,6 @@ font-size:14px;
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
-.qr-container img{width:150px;}
 }
 </style>
 </head>
@@ -227,6 +220,7 @@ nav button{font-size:14px;}
 <div id="step1">
 <div class="step-title">Step 1: Vehicle Information</div>
 <div class="form-grid">
+
 <select id="vehicleType">
 <option value="">Select Vehicle Category</option>
 <option>Two Wheeler</option>
@@ -277,8 +271,8 @@ nav button{font-size:14px;}
 </select>
 
 <input id="regNo" placeholder="Vehicle Number">
-<input id="chassis" placeholder="Chassis Number (Last 5 Digits)" maxlength="5">
-<input id="engine" placeholder="Engine Number (Last 5 Digits)" maxlength="5">
+<input id="chassis" placeholder="Chassis Number (Last 5 digits)" maxlength="5">
+<input id="engine" placeholder="Engine Number (Last 5 digits)" maxlength="5">
 
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
@@ -303,22 +297,20 @@ nav button{font-size:14px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>1️⃣ Scan the QR Code below</h3>
-<h3>2️⃣ Make Payment</h3>
-<h3>3️⃣ Upload Payment Screenshot</h3>
+<h3>Scan QR Code & Make Payment</h3>
 
 <div class="qr-container">
-<img id="qrCode" src="qr.png" alt="UPI QR">
+<img src="qr.png">
 </div>
 
 <div class="upi-apps">
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe">
-<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg">
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo.svg/256px-Paytm_Logo.svg.png" alt="Paytm">
 </div>
 
 <p style="margin-top:10px;font-size:15px;">
-After payment, upload your payment screenshot below for verification.
+Upload your payment screenshot below for verification
 </p>
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
@@ -339,7 +331,7 @@ Upload Payment Screenshot
 <div class="success-check">✔</div>
 <h2 style="text-align:center;">Booking Successful</h2>
 <p style="text-align:center;">Application ID</p>
-<h3 id="finalId" style="text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight);"></h3>
+<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed #61c861; "></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -350,7 +342,7 @@ Upload Payment Screenshot
 <h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
-<p style="background:#fde7e5; padding:10px; border-radius:10px; font-weight:bold; color:var(--highlight); border-left:5px solid var(--highlight);">✔ Delivery within 8–10 working days</p>
+<p style=" background:#ffeaea; padding:10px; border-radius:10px; font-weight:bold; color:#ea4335; border-left:5px solid #ea4335; "> ✔ Delivery within 8–10 working days </p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -373,7 +365,6 @@ function goStep3(){
 step2.style.display="none";
 step3.style.display="block";
 progressBar.style.width="100%";
-refreshQR();
 }
 
 function backStep1(){
@@ -385,12 +376,6 @@ progressBar.style.width="33%";
 document.getElementById("screenshot").onchange=()=>{
 document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔";
 };
-
-// QR auto-refresh
-function refreshQR(){
-const qr=document.getElementById("qrCode");
-qr.src="qr.png?t="+new Date().getTime();
-}
 
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
@@ -413,14 +398,20 @@ trackPage.style.display="block";
 
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
+let resDiv = document.getElementById('trackResult');
+
 if(orders[id]){
-trackResult.innerHTML=`<div class="info-list">
-<div class="info-item"><span>Status:</span><b>${orders[id].status}</b></div>
-<div class="info-item"><span>Vehicle:</span><b>${orders[id].vehicle}</b></div>
-<div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
+resDiv.innerHTML=`<div class="info-list">
+<div class="info-item"><span>Status:</span><b>Pending Verification</b></div>
+<div class="info-item"><span>Owner:</span><b>${orders[id].owner} (Privacy Protocol)</b></div>
 </div>`;
-}else{
-trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
+} else if(/^HSRP\d{6}$/.test(id)){
+resDiv.innerHTML=`<div class="info-list">
+<div class="info-item"><span>Status:</span><b>Pending Verification</b></div>
+<div class="info-item"><span>Owner:</span><b>(Privacy Protocol)</b></div>
+</div>`;
+} else {
+resDiv.innerHTML="<p style='color:red'>Application ID not found</p>";
 }
 }
 </script>
