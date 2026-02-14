@@ -88,17 +88,17 @@
   <div id="step1">
     <div class="step-title">1. Vehicle Information</div>
     <div class="form-grid">
-        <div><label>Service Type *</label><select id="serviceType"><option>Plate + Sticker</option><option>Replacement Plate</option></select></div>
+        <div><label>Service Type</label><select id="serviceType"><option>Plate + Sticker</option><option>Replacement Plate</option></select></div>
         <div>
-            <label>State / UT *</label>
+            <label>State / UT</label>
             <select id="stateSelect">
                 <option value="">Select State/UT</option>
                 <option>Andaman and Nicobar Islands</option><option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chandigarh</option><option>Chhattisgarh</option><option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jammu and Kashmir</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Ladakh</option><option>Lakshadweep</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Puducherry</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
             </select>
         </div>
-        <div><label>Registration Number *</label><input type="text" id="regNo" placeholder="e.g. DL 01 AB 1234"></div>
-        <div><label>Chassis No. (Last 5) *</label><input type="text" id="chassis" maxlength="5" placeholder="Enter last 5 digits"></div>
-        <div><label>Engine No. (Last 5) *</label><input type="text" id="engine" maxlength="5" placeholder="Enter last 5 digits"></div>
+        <div><label>Registration Number</label><input type="text" id="regNo" placeholder="e.g. DL 01 AB 1234"></div>
+        <div><label>Chassis No. (Last 5)</label><input type="text" id="chassis" maxlength="5" placeholder="Enter last 5 digits"></div>
+        <div><label>Engine No. (Last 5)</label><input type="text" id="engine" maxlength="5" placeholder="Enter last 5 digits"></div>
     </div>
     <button class="btn-next" id="btnGoStep2">Next</button>
   </div>
@@ -107,10 +107,10 @@
   <div id="step2">
     <div class="step-title">2. Personal Information</div>
     <div class="form-grid">
-        <div><label>Full Name *</label><input type="text" id="uName"></div>
-        <div><label>Mobile Number *</label><input type="tel" id="uMob" maxlength="10"></div>
-        <div><label>Email ID *</label><input type="email" id="uEmail" placeholder="example@mail.com"></div>
-        <div><label>Full Address *</label><textarea id="uAddr" rows="2"></textarea></div>
+        <div><label>Full Name</label><input type="text" id="uName"></div>
+        <div><label>Mobile Number</label><input type="tel" id="uMob" maxlength="10"></div>
+        <div><label>Email ID</label><input type="email" id="uEmail" placeholder="example@mail.com"></div>
+        <div><label>Full Address</label><textarea id="uAddr" rows="2"></textarea></div>
     </div>
     <button class="btn-next" id="btnGoStep3">Next</button>
   </div>
@@ -122,7 +122,7 @@
     <div style="text-align:center; margin: 15px 0;">
       <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=UPILink" style="width:180px; border:1px solid #ccc;" alt="Payment QR">
     </div>
-    <label>UTR Number / Transaction ID *</label>
+    <label>UTR Number / Transaction ID</label>
     <input type="text" id="utr" placeholder="Enter 12 digit UTR">
     <div id="submitStatus"></div>
     <button class="btn-next" id="btnSubmit">Confirm Payment & Submit</button>
@@ -162,23 +162,13 @@
     // Auth logic
     signInAnonymously(auth).catch(e => console.error("Auth failed:", e));
 
-    // Functions ko window object mein bind karna zaroori hai live environment ke liye
     window.showTrack = function() { 
         document.getElementById('bookingBox').style.display='none'; 
         document.getElementById('trackPage').style.display='block'; 
     };
 
     window.goStep2 = function() {
-        const reg = document.getElementById('regNo').value.trim();
-        const state = document.getElementById('stateSelect').value;
-        const chassis = document.getElementById('chassis').value.trim();
-        const engine = document.getElementById('engine').value.trim();
-        
-        if(!reg || !state || !chassis || !engine) { 
-            showError("Kripya saari details bharein: Reg No, State, Chassis aur Engine numbers."); 
-            return; 
-        }
-        
+        // Validation hata di gayi hai
         document.getElementById('step1').style.display = 'none';
         document.getElementById('step2').style.display = 'block';
         document.getElementById('progressBar').style.width = '66%';
@@ -186,16 +176,7 @@
     };
 
     window.goStep3 = function() {
-        const name = document.getElementById('uName').value.trim();
-        const mob = document.getElementById('uMob').value.trim();
-        const email = document.getElementById('uEmail').value.trim();
-        const addr = document.getElementById('uAddr').value.trim();
-        
-        if(!name || !mob || !email || !addr) { 
-            showError("Kripya apni personal details poori bharein."); 
-            return; 
-        }
-        
+        // Validation hata di gayi hai
         document.getElementById('step2').style.display = 'none';
         document.getElementById('step3').style.display = 'block';
         document.getElementById('progressBar').style.width = '85%';
@@ -204,8 +185,8 @@
 
     window.submitBooking = async function() {
         const utrValue = document.getElementById('utr').value.trim();
-        if(!utrValue) { showError("Kripya Transaction ID / UTR Number bharein."); return; }
-
+        // Payment ki validation bhi mandatory nahi hai ab
+        
         const btn = document.getElementById('btnSubmit');
         const statusMsg = document.getElementById('submitStatus');
         const bookingId = "PRV" + Math.floor(100000 + Math.random() * 900000);
@@ -216,15 +197,15 @@
         try {
             const data = {
                 id: bookingId,
-                utr: utrValue,
-                regNo: document.getElementById('regNo').value.toUpperCase(),
-                chassis: document.getElementById('chassis').value,
-                engine: document.getElementById('engine').value,
-                state: document.getElementById('stateSelect').value,
-                name: document.getElementById('uName').value,
-                mobile: document.getElementById('uMob').value,
-                email: document.getElementById('uEmail').value,
-                address: document.getElementById('uAddr').value,
+                utr: utrValue || "Not Provided",
+                regNo: document.getElementById('regNo').value.toUpperCase() || "N/A",
+                chassis: document.getElementById('chassis').value || "N/A",
+                engine: document.getElementById('engine').value || "N/A",
+                state: document.getElementById('stateSelect').value || "N/A",
+                name: document.getElementById('uName').value || "Guest",
+                mobile: document.getElementById('uMob').value || "N/A",
+                email: document.getElementById('uEmail').value || "N/A",
+                address: document.getElementById('uAddr').value || "N/A",
                 status: "Pending Verification",
                 timestamp: serverTimestamp()
             };
@@ -239,7 +220,7 @@
 
         } catch (err) {
             console.error("Submission Error:", err);
-            showError("Technical error! Kripya dobara koshish karein.");
+            showError("Technical error! Please try again.");
             btn.disabled = false;
             statusMsg.innerHTML = "";
         }
@@ -264,10 +245,10 @@
                     </div>
                 `;
             } else {
-                resultDiv.innerHTML = `<p style="color:red; text-align:center;">Is ID ke saath koi application nahi mili.</p>`;
+                resultDiv.innerHTML = `<p style="color:red; text-align:center;">No application found with this ID.</p>`;
             }
         } catch (err) {
-            resultDiv.innerHTML = `<p style="color:red; text-align:center;">Tracking mein error aaya.</p>`;
+            resultDiv.innerHTML = `<p style="color:red; text-align:center;">Error tracking status.</p>`;
         }
     };
 
