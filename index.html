@@ -6,63 +6,189 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{--primary:#0b3c6d;--bg:#f2f6fb;--success:#28a745;--error:#d32f2f;}
-body{margin:0;font-family:Segoe UI;background:var(--bg);}
+:root{
+--primary:#0b3c6d;
+--bg:#f2f6fb;
+--success:#28a745;
+}
+
+body{
+margin:0;
+font-family:Segoe UI, Arial;
+background:var(--bg);
+font-size:16px;
+}
+
 *{box-sizing:border-box;}
 
-header{background:var(--primary);color:#fff;padding:12px;display:flex;gap:10px;align-items:center;}
+header{
+background:var(--primary);
+color:#fff;
+padding:12px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
 header img{height:40px}
 
-nav{background:#003366;display:flex;justify-content:center}
-nav button{color:#fff;background:none;border:none;padding:10px 15px;font-weight:bold;cursor:pointer}
+nav{
+background:#003366;
+display:flex;
+justify-content:center
+}
 
-.container{max-width:600px;margin:15px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+nav button{
+color:#fff;
+background:none;
+border:none;
+padding:12px 18px;
+font-weight:bold;
+font-size:15px;
+cursor:pointer
+}
 
-.step-title{background:#e3ecff;padding:10px;margin-bottom:15px;border-left:5px solid var(--primary)}
+.container{
+max-width:600px;
+margin:15px auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.1)
+}
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.step-title{
+background:#e3ecff;
+padding:12px;
+margin-bottom:15px;
+border-left:5px solid var(--primary);
+font-weight:bold;
+}
 
-label{font-size:13px;font-weight:bold}
-input,select,textarea{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc}
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
 
-.error-text{color:red;font-size:12px}
+@media(max-width:600px){
+.form-grid{grid-template-columns:1fr}
+body{font-size:17px}
+}
 
-.btn-next{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:8px;width:100%;margin-top:10px;font-size:16px;cursor:pointer}
+label{font-weight:bold;font-size:15px}
 
-.progress{height:8px;background:#ddd;border-radius:10px;margin-bottom:15px}
-.progress-bar{height:100%;width:33%;background:linear-gradient(90deg,#0b3c6d,#1a5ea3);transition:width 0.3s ease;}
+input,select,textarea{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
 
-.payment-card{border:1px solid #ddd;padding:15px;border-radius:12px;background:#fafafa;text-align:center}
-.qr-container img{width:160px;margin:10px 0}
+textarea{min-height:80px}
 
-.upi-apps{display:flex;justify-content:center;gap:15px;margin-top:10px}
+.btn-next{
+background:var(--primary);
+color:#fff;
+border:none;
+padding:15px;
+border-radius:10px;
+width:100%;
+margin-top:12px;
+font-size:17px;
+cursor:pointer
+}
+
+.progress{
+height:8px;
+background:#ddd;
+border-radius:10px;
+margin-bottom:15px
+}
+
+.progress-bar{
+height:100%;
+width:33%;
+background:linear-gradient(90deg,#0b3c6d,#1a5ea3);
+transition:width .3s
+}
+
+.payment-card{
+border:1px solid #ddd;
+padding:18px;
+border-radius:12px;
+background:#fafafa;
+text-align:center
+}
+
+.qr-container img{
+width:180px;
+margin:15px 0;
+}
+
+.upi-apps{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-top:10px
+}
+
 .upi-apps img{width:45px}
 
 .file-input-wrapper{
-border:2px dashed #ccc;
+border:2px dashed #0b3c6d;
 padding:15px;
 border-radius:10px;
 text-align:center;
-margin-top:10px;
+margin-top:15px;
 cursor:pointer;
+font-weight:bold;
+color:#0b3c6d;
 }
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
 
-.success-check{font-size:60px;color:var(--success);text-align:center;}
+.success-check{
+font-size:70px;
+color:var(--success);
+text-align:center;
+}
 
-.info-list{text-align:left;background:#f9f9f9;padding:10px;border-radius:8px}
-.info-item{display:flex;justify-content:space-between;margin-bottom:5px;border-bottom:1px solid #eee;padding:5px 0;}
+.info-list{
+text-align:left;
+background:#f9f9f9;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+}
 
-footer{text-align:center;padding:15px;color:#666}
+.info-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:6px;
+border-bottom:1px solid #eee;
+padding:5px 0;
+}
 
-/* Mobile Responsive */
+.thankyou-box{
+background:#eafff1;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+footer{
+text-align:center;
+padding:15px;
+color:#666;
+font-size:14px;
+}
+
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
-header h3{font-size:16px;}
-nav button{font-size:13px;padding:8px;}
-.qr-container img{width:140px;}
+nav button{font-size:14px;}
+.qr-container img{width:150px;}
 }
 </style>
 </head>
@@ -87,93 +213,68 @@ nav button{font-size:13px;padding:8px;}
 <!-- TRACK -->
 <div id="trackPage">
 <h3>Track Application</h3>
-<input id="trackId" placeholder="HSRP123456" style="text-transform:uppercase">
+<input id="trackId" placeholder="HSRP123456">
 <button class="btn-next" onclick="trackOrder()">Check Status</button>
 <div id="trackResult" style="margin-top:15px;"></div>
 </div>
 
 <div id="bookingBox">
+
 <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
 <!-- STEP 1 -->
 <div id="step1">
-<div class="step-title">Step 1: Vehicle Info</div>
+<div class="step-title">Step 1: Vehicle Information</div>
 <div class="form-grid">
 
-<div>
-<label>Vehicle Category</label>
 <select id="vehicleType">
 <option value="">Select Vehicle Category</option>
-<optgroup label="Normal Vehicles">
 <option>Two Wheeler</option>
 <option>Four Wheeler</option>
 <option>Commercial Vehicle</option>
-</optgroup>
-<optgroup label="Electric Vehicles (EV)">
 <option>Electric Two Wheeler (EV)</option>
 <option>Electric Four Wheeler (EV)</option>
 <option>Electric Commercial Vehicle (EV)</option>
-</optgroup>
 </select>
-</div>
 
-<div>
-<label>State / UT</label>
 <select id="stateSelect">
 <option value="">Select State / UT</option>
-<option>Andhra Pradesh</option>
-<option>Arunachal Pradesh</option>
-<option>Assam</option>
-<option>Bihar</option>
-<option>Chhattisgarh</option>
-<option>Goa</option>
-<option>Gujarat</option>
-<option>Haryana</option>
-<option>Himachal Pradesh</option>
-<option>Jharkhand</option>
-<option>Karnataka</option>
-<option>Kerala</option>
-<option>Madhya Pradesh</option>
+<option>Delhi</option>
 <option>Maharashtra</option>
+<option>Uttar Pradesh</option>
+<option>Bihar</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Haryana</option>
+<option>Gujarat</option>
+<option>Tamil Nadu</option>
+<option>Karnataka</option>
+<option>West Bengal</option>
+<option>Telangana</option>
+<option>Kerala</option>
+<option>Odisha</option>
+<option>Madhya Pradesh</option>
+<option>Chhattisgarh</option>
+<option>Jharkhand</option>
+<option>Assam</option>
 <option>Manipur</option>
 <option>Meghalaya</option>
 <option>Mizoram</option>
 <option>Nagaland</option>
-<option>Odisha</option>
-<option>Punjab</option>
-<option>Rajasthan</option>
 <option>Sikkim</option>
-<option>Tamil Nadu</option>
-<option>Telangana</option>
 <option>Tripura</option>
-<option>Uttar Pradesh</option>
 <option>Uttarakhand</option>
-<option>West Bengal</option>
-<option>Andaman and Nicobar Islands</option>
-<option>Chandigarh</option>
-<option>Dadra and Nagar Haveli and Daman and Diu</option>
-<option>Delhi (NCT)</option>
 <option>Jammu and Kashmir</option>
 <option>Ladakh</option>
-<option>Lakshadweep</option>
 <option>Puducherry</option>
+<option>Chandigarh</option>
+<option>Lakshadweep</option>
+<option>Andaman and Nicobar Islands</option>
 </select>
-</div>
 
-<div>
-<label>Vehicle No</label>
-<input id="regNo" style="text-transform:uppercase" placeholder="DL01AB1234">
-</div>
-
-<div>
-<label>Chassis (Last 5)</label>
-<input id="chassis" maxlength="5">
-</div>
-
-<div>
-<label>Engine (Last 5)</label>
-<input id="engine" maxlength="5">
-</div>
+<input id="regNo" placeholder="Vehicle Number">
+<input id="chassis" placeholder="Chassis Last 5 Digits" maxlength="5">
+<input id="engine" placeholder="Engine Last 5 Digits" maxlength="5">
 
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
@@ -181,13 +282,14 @@ nav button{font-size:13px;padding:8px;}
 
 <!-- STEP 2 -->
 <div id="step2">
-<div class="step-title">Step 2: Owner Info</div>
+<div class="step-title">Step 2: Owner Information</div>
 <div class="form-grid">
 <input id="uName" placeholder="Full Name">
-<input id="uMob" placeholder="Mobile Number" maxlength="10">
+<input id="uMob" placeholder="Mobile Number">
 <input id="uEmail" placeholder="Email">
 <textarea id="uAddr" placeholder="Complete Address" style="grid-column:1/-1"></textarea>
 </div>
+
 <button class="btn-next" onclick="goStep3()">Proceed to Payment</button>
 <button class="btn-next" style="background:#666" onclick="backStep1()">Back</button>
 </div>
@@ -197,9 +299,10 @@ nav button{font-size:13px;padding:8px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>Scan & Pay via UPI</h3>
+<h3>Scan QR Code & Make Payment</h3>
+
 <div class="qr-container">
-<img src="qr.png" width="160">
+<img src="qr.png">
 </div>
 
 <div class="upi-apps">
@@ -208,23 +311,29 @@ nav button{font-size:13px;padding:8px;}
 <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo.svg">
 </div>
 
-<p>Upload payment screenshot for verification</p>
+<p style="margin-top:10px;font-size:15px;">
+After payment, upload your payment screenshot below for verification.
+</p>
+
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
-Click to Upload Screenshot
+Upload Payment Screenshot
 <input type="file" id="screenshot" hidden>
 </div>
+
 </div>
 
 <button class="btn-next" onclick="submitForm()">Complete Submission</button>
 </div>
+
 </div>
 
 <!-- THANK YOU -->
-<div id="thankyouPage" style="text-align:center;">
+<div id="thankyouPage">
+<div class="thankyou-box">
 <div class="success-check">✔</div>
-<h2>Booking Successful</h2>
-<p>Application ID</p>
-<h3 id="finalId"></h3>
+<h2 style="text-align:center;">Booking Successful</h2>
+<p style="text-align:center;">Application ID</p>
+<h3 id="finalId" style="text-align:center;color:#0b3c6d"></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -232,12 +341,13 @@ Click to Upload Screenshot
 <div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
 </div>
 
-<h4>Process Timeline</h4>
+<h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
 <p>✔ Delivery within <b>8–10 working days</b></p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
+</div>
 </div>
 
 </div>
@@ -245,12 +355,7 @@ Click to Upload Screenshot
 <footer>© 2026 Plate Service Portal</footer>
 
 <script>
-let orders = {};
-const screenshotInput = document.getElementById("screenshot");
-
-screenshotInput.onchange = () => {
- document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded Successfully ✔";
-};
+let orders={};
 
 function goStep2(){
 step1.style.display="none";
@@ -270,13 +375,19 @@ step1.style.display="block";
 progressBar.style.width="33%";
 }
 
+document.getElementById("screenshot").onchange=()=>{
+document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔";
+};
+
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
 orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
+
 finalId.innerText=id;
 displayReg.innerText=regNo.value;
 displayOwner.innerText=uName.value;
 displayDate.innerText=new Date().toDateString();
+
 bookingBox.style.display="none";
 thankyouPage.style.display="block";
 }
@@ -303,3 +414,4 @@ trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
 
 </body>
 </html>
+
