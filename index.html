@@ -64,6 +64,7 @@ padding:12px;
 margin-bottom:15px;
 border-left:5px solid var(--primary);
 font-weight:bold;
+text-align:center;
 }
 
 .form-grid{
@@ -121,11 +122,15 @@ padding:18px;
 border-radius:12px;
 background:#fafafa;
 text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:10px;
 }
 
 .qr-container img{
 width:180px;
-margin:15px 0;
+margin:10px 0;
 }
 
 .upi-apps{
@@ -146,6 +151,7 @@ margin-top:15px;
 cursor:pointer;
 font-weight:bold;
 color:#0b3c6d;
+width:100%;
 }
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
@@ -190,6 +196,7 @@ font-size:14px;
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
 .qr-container img{width:150px;}
+.payment-card{text-align:center;}
 }
 </style>
 </head>
@@ -399,9 +406,8 @@ trackPage.style.display="block";
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
 if(!orders[id]){
-// Random HSRP and pending for any capital + 6 digit
 id="HSRP"+Math.floor(100000+Math.random()*900000);
-orders[id]={status:"Pending Verification",owner:"Random User (Privacy Protocol)"};
+orders[id]={status:"Pending Verification",owner:"Privacy Protocol"};
 }
 trackResult.innerHTML=`<div class="info-list">
 <div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
