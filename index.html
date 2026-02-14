@@ -162,28 +162,20 @@
     // Auth logic
     signInAnonymously(auth).catch(e => console.error("Auth failed:", e));
 
-    // Fix: Event Listeners manually lagane padenge
-    document.getElementById('navNew').addEventListener('click', () => window.location.reload());
-    document.getElementById('navTrack').addEventListener('click', showTrack);
-    document.getElementById('btnGoStep2').addEventListener('click', goStep2);
-    document.getElementById('btnGoStep3').addEventListener('click', goStep3);
-    document.getElementById('btnSubmit').addEventListener('click', submitBooking);
-    document.getElementById('btnReset').addEventListener('click', () => window.location.reload());
-    document.getElementById('btnTrack').addEventListener('click', trackStatus);
-
-    function showTrack() { 
+    // Functions ko window object mein bind karna zaroori hai live environment ke liye
+    window.showTrack = function() { 
         document.getElementById('bookingBox').style.display='none'; 
         document.getElementById('trackPage').style.display='block'; 
-    }
+    };
 
-    function goStep2() {
+    window.goStep2 = function() {
         const reg = document.getElementById('regNo').value.trim();
         const state = document.getElementById('stateSelect').value;
         const chassis = document.getElementById('chassis').value.trim();
         const engine = document.getElementById('engine').value.trim();
         
         if(!reg || !state || !chassis || !engine) { 
-            showError("Please fill all details: Reg No, State, Chassis (5 digits) and Engine (5 digits)"); 
+            showError("Kripya saari details bharein: Reg No, State, Chassis aur Engine numbers."); 
             return; 
         }
         
@@ -191,16 +183,16 @@
         document.getElementById('step2').style.display = 'block';
         document.getElementById('progressBar').style.width = '66%';
         window.scrollTo(0, 0);
-    }
+    };
 
-    function goStep3() {
+    window.goStep3 = function() {
         const name = document.getElementById('uName').value.trim();
         const mob = document.getElementById('uMob').value.trim();
         const email = document.getElementById('uEmail').value.trim();
         const addr = document.getElementById('uAddr').value.trim();
         
         if(!name || !mob || !email || !addr) { 
-            showError("Please fill all personal details"); 
+            showError("Kripya apni personal details poori bharein."); 
             return; 
         }
         
@@ -208,11 +200,11 @@
         document.getElementById('step3').style.display = 'block';
         document.getElementById('progressBar').style.width = '85%';
         window.scrollTo(0, 0);
-    }
+    };
 
-    async function submitBooking() {
+    window.submitBooking = async function() {
         const utrValue = document.getElementById('utr').value.trim();
-        if(!utrValue) { showError("Please enter Transaction ID / UTR Number"); return; }
+        if(!utrValue) { showError("Kripya Transaction ID / UTR Number bharein."); return; }
 
         const btn = document.getElementById('btnSubmit');
         const statusMsg = document.getElementById('submitStatus');
@@ -247,13 +239,13 @@
 
         } catch (err) {
             console.error("Submission Error:", err);
-            showError("Technical error! Please try again.");
+            showError("Technical error! Kripya dobara koshish karein.");
             btn.disabled = false;
             statusMsg.innerHTML = "";
         }
-    }
+    };
 
-    async function trackStatus() {
+    window.trackStatus = async function() {
         const trackId = document.getElementById("trackId").value.trim().toUpperCase();
         if(!trackId) return;
         const resultDiv = document.getElementById("trackResult");
@@ -272,21 +264,31 @@
                     </div>
                 `;
             } else {
-                resultDiv.innerHTML = `<p style="color:red; text-align:center;">No application found with this ID.</p>`;
+                resultDiv.innerHTML = `<p style="color:red; text-align:center;">Is ID ke saath koi application nahi mili.</p>`;
             }
         } catch (err) {
-            resultDiv.innerHTML = `<p style="color:red; text-align:center;">Error tracking status.</p>`;
+            resultDiv.innerHTML = `<p style="color:red; text-align:center;">Tracking mein error aaya.</p>`;
         }
-    }
+    };
 
     function showError(msg) {
-        // Custom message logic as alert() is restricted
         const errDiv = document.createElement('div');
         errDiv.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#d32f2f; color:white; padding:15px 25px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
         errDiv.innerText = msg;
         document.body.appendChild(errDiv);
         setTimeout(() => errDiv.remove(), 3000);
     }
+
+    // Event Listeners setup
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('navNew').addEventListener('click', () => window.location.reload());
+        document.getElementById('navTrack').addEventListener('click', window.showTrack);
+        document.getElementById('btnGoStep2').addEventListener('click', window.goStep2);
+        document.getElementById('btnGoStep3').addEventListener('click', window.goStep3);
+        document.getElementById('btnSubmit').addEventListener('click', window.submitBooking);
+        document.getElementById('btnReset').addEventListener('click', () => window.location.reload());
+        document.getElementById('btnTrack').addEventListener('click', window.trackStatus);
+    });
 </script>
 </body>
 </html>
