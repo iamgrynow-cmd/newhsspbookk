@@ -1,298 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Plate Service Portal | Private Agency</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
+<meta charset="UTF-8">
+<title>Plate Service Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        /* Base Styles */
-        body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background:#f2f6fb; color: #333; line-height: 1.5; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#f2f6fb; }
+header { background:#0b3c6d; color:#fff; padding:15px; display:flex; gap:10px; align-items:center; }
+header img { height:40px; }
+nav { background:#003366; padding:10px; text-align:center; }
+nav button { background:none;border:none;color:#fff;font-size:14px;margin:0 10px;cursor:pointer; }
 
-        /* HEADER */
-        header { background:#0b3c6d; color:white; padding:15px; display:flex; gap:12px; align-items:center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        header img { height:40px; }
-        header h2 { margin:0; font-size:18px; font-weight: 700; }
-        header p { margin:2px 0 0 0; font-size:12px; opacity:0.8; }
+.container { width:94%; max-width:900px; margin:20px auto; background:#fff; padding:25px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,.1); }
 
-        /* NAV */
-        nav { background:#003366; padding:10px 5px; display: flex; justify-content: center; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-        nav button { background: none; border: none; color:white; padding: 5px 15px; text-decoration:none; font-weight:600; font-size:14px; cursor: pointer; }
+.step-title { background:#e3ecff; padding:12px; border-left:5px solid #0b3c6d; margin-bottom:15px; }
 
-        /* CONTAINER */
-        .container { 
-            width: 94%; 
-            max-width: 1000px; 
-            margin: 25px auto; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-        }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+@media(max-width:768px){ .form-grid{grid-template-columns:1fr;} }
 
-        /* FORM STYLING */
-        .step-title { background:#e3ecff; padding:15px; font-weight:bold; border-left:6px solid #0b3c6d; margin-bottom:20px; font-size: 16px; border-radius: 0 4px 4px 0; color: #0b3c6d; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media(max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .container { padding: 20px; } }
+input,select,textarea { width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; }
 
-        label { font-weight:600; margin-top:10px; display:block; font-size: 14px; color: #555; }
-        input, select, textarea { width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ccc; font-size: 15px; background: #fafafa; }
+.btn-next { background:#0b3c6d; color:#fff; padding:14px; border:none; border-radius:6px; width:100%; margin-top:20px; font-size:16px; cursor:pointer; }
 
-        .btn-next { background:#0b3c6d; color:white; padding:15px; border:none; border-radius:8px; width:100%; font-size:16px; font-weight: bold; margin-top:25px; cursor: pointer; transition: 0.2s; }
-        .btn-next:active { background: #002244; transform: scale(0.98); }
-        .btn-next:disabled { background: #999; cursor: not-allowed; }
+.progress { background:#ddd; height:8px; border-radius:10px; margin-bottom:20px; }
+.progress-bar { height:100%; width:33%; background:#0b3c6d; border-radius:10px; transition:.3s; }
 
-        /* PROGRESS BAR */
-        .progress { width:100%; background:#e0e0e0; border-radius:10px; margin-bottom:25px; height: 8px; }
-        .progress-bar { height:100%; width:33%; background:#0b3c6d; border-radius:10px; transition:0.4s; }
+#step2,#step3,#thankyouPage,#trackPage{display:none;}
 
-        #step2, #step3, #thankyouPage, #trackPage { display:none; }
-        .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0b3c6d; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        footer { text-align:center; padding:30px 15px; font-size:13px; background:#e9edf2; color: #777; border-top: 1px solid #ddd; margin-top: 40px; }
-    </style>
+footer{ text-align:center;padding:20px;background:#e9edf2;margin-top:30px;font-size:13px;}
+</style>
 </head>
 
 <body>
 
 <header>
-  <img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Logo">
-  <div>
-    <h2>Plate Service Portal</h2>
-    <p>Private Assistance Agency</p>
-  </div>
+<img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png">
+<div>
+<h2>Plate Service Portal</h2>
+<p>Private Assistance Agency</p>
+</div>
 </header>
 
 <nav>
-  <button id="navNew">NEW BOOKING</button>
-  <button id="navTrack">TRACK STATUS</button>
+<button id="navNew">NEW BOOKING</button>
+<button id="navTrack">TRACK STATUS</button>
 </nav>
 
 <div class="container" id="trackPage">
-    <h2 style="text-align:center; color:#0b3c6d;">Track Status</h2>
-    <input type="text" id="trackId" placeholder="Enter Application ID">
-    <button class="btn-next" id="btnTrack">Check Status</button>
-    <div id="trackResult" style="margin-top:20px;"></div>
+<h2>Track Status</h2>
+<input type="text" id="trackId" placeholder="Enter Application ID">
+<button class="btn-next" id="btnTrack">Check Status</button>
+<div id="trackResult"></div>
 </div>
 
 <div class="container" id="bookingBox">
-  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
-  <!-- Step 1: Vehicle Information -->
-  <div id="step1">
-    <div class="step-title">1. Vehicle Information</div>
-    <div class="form-grid">
-        <div><label>Service Type</label><select id="serviceType"><option>Plate + Sticker</option><option>Replacement Plate</option></select></div>
-        <div>
-            <label>State / UT</label>
-            <select id="stateSelect">
-                <option value="">Select State/UT</option>
-                <option>Andaman and Nicobar Islands</option><option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chandigarh</option><option>Chhattisgarh</option><option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jammu and Kashmir</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Ladakh</option><option>Lakshadweep</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Puducherry</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
-            </select>
-        </div>
-        <div><label>Registration Number</label><input type="text" id="regNo" placeholder="e.g. DL 01 AB 1234"></div>
-        <div><label>Chassis No. (Last 5)</label><input type="text" id="chassis" maxlength="5" placeholder="Enter last 5 digits"></div>
-        <div><label>Engine No. (Last 5)</label><input type="text" id="engine" maxlength="5" placeholder="Enter last 5 digits"></div>
-    </div>
-    <button class="btn-next" id="btnGoStep2">Next</button>
-  </div>
+<!-- STEP 1 -->
+<div id="step1">
+<div class="step-title">1. Vehicle Information</div>
+<div class="form-grid">
 
-  <!-- Step 2: Personal Information -->
-  <div id="step2">
-    <div class="step-title">2. Personal Information</div>
-    <div class="form-grid">
-        <div><label>Full Name</label><input type="text" id="uName"></div>
-        <div><label>Mobile Number</label><input type="tel" id="uMob" maxlength="10"></div>
-        <div><label>Email ID</label><input type="email" id="uEmail" placeholder="example@mail.com"></div>
-        <div><label>Full Address</label><textarea id="uAddr" rows="2"></textarea></div>
-    </div>
-    <button class="btn-next" id="btnGoStep3">Next</button>
-  </div>
+<div>
+<label>Service Type</label>
+<select>
+<option>Plate + Sticker</option>
+<option>Replacement Plate</option>
+</select>
+</div>
 
-  <!-- Step 3: Payment -->
-  <div id="step3">
-    <div class="step-title">3. Payment</div>
-    <p style="text-align:center; font-weight:bold;">Scan QR to Pay</p>
-    <div style="text-align:center; margin: 15px 0;">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=UPILink" style="width:180px; border:1px solid #ccc;" alt="Payment QR">
-    </div>
-    <label>UTR Number / Transaction ID</label>
-    <input type="text" id="utr" placeholder="Enter 12 digit UTR">
-    <div id="submitStatus"></div>
-    <button class="btn-next" id="btnSubmit">Confirm Payment & Submit</button>
-  </div>
+<div>
+<label>State / UT</label>
+<select>
+<option>Select State / UT</option>
+<option>Andaman and Nicobar Islands</option>
+<option>Andhra Pradesh</option>
+<option>Arunachal Pradesh</option>
+<option>Assam</option>
+<option>Bihar</option>
+<option>Chandigarh</option>
+<option>Chhattisgarh</option>
+<option>Dadra and Nagar Haveli and Daman and Diu</option>
+<option>Delhi</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jammu and Kashmir</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Ladakh</option>
+<option>Lakshadweep</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Mizoram</option>
+<option>Nagaland</option>
+<option>Odisha</option>
+<option>Puducherry</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
+<option>Uttar Pradesh</option>
+<option>Uttarakhand</option>
+<option>West Bengal</option>
+</select>
+</div>
 
-  <!-- Success/Thank You Page -->
-  <div id="thankyouPage" style="text-align:center;">
-    <div style="font-size: 50px; color: #2e7d32; margin-bottom: 10px;">✔</div>
-    <h2 style="color: #2e7d32;">Application Successfully Submitted!</h2>
-    <p>We have received your application and it is now under process.</p>
-    <div style="background:#f0f7ff; padding:20px; border-radius:12px; margin:20px auto; border: 1px solid #d0e3ff; max-width: 350px;">
-      <small style="color:#666; font-weight:bold;">YOUR APPLICATION ID</small><br>
-      <span id="bId" style="font-size:24px; font-weight:bold; color:#0b3c6d;"></span>
-    </div>
-    <p style="background:#fff3cd; color:#856404; padding:12px; border-radius:8px; font-size:14px; font-weight:bold;">
-      🚚 Note: Your plate will be delivered within 8 to 10 working days.
-    </p>
-    <p style="color: #666; font-size: 13px; margin-top:15px;">Please save this Application ID for future reference and tracking.</p>
-    <button class="btn-next" id="btnReset" style="background:#666; width:auto; padding:10px 30px;">Apply for Another Vehicle</button>
-  </div>
+<div><label>Registration Number</label><input placeholder="DL01AB1234"></div>
+<div><label>Chassis Number (Last 5)</label><input></div>
+<div><label>Engine Number (Last 5)</label><input></div>
+
+</div>
+<button class="btn-next" id="btnGoStep2">Next</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2">
+<div class="step-title">2. Personal Information</div>
+<div class="form-grid">
+<div><label>Full Name</label><input></div>
+<div><label>Mobile Number</label><input></div>
+<div><label>Email</label><input></div>
+<div><label>Full Address</label><textarea></textarea></div>
+</div>
+<button class="btn-next" id="btnGoStep3">Next</button>
+</div>
+
+<!-- STEP 3 -->
+<div id="step3">
+<div class="step-title">3. Payment</div>
+<p align="center">Scan QR to Pay</p>
+<div align="center">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay" width="180">
+</div>
+<label>UTR Number</label>
+<input>
+<button class="btn-next" id="btnSubmit">Confirm Payment</button>
+</div>
+
+<!-- THANK YOU -->
+<div id="thankyouPage" align="center">
+<h2 style="color:green;">✔ Application Submitted Successfully</h2>
+<p>Your Application ID:</p>
+<h1 id="bId"></h1>
+
+<p style="background:#fff3cd;color:#856404;padding:12px;border-radius:8px;font-weight:bold;">
+🚚 Delivery Time: 8 to 10 Working Days
+</p>
+
+<button class="btn-next" id="btnReset">Apply for Another Vehicle</button>
+</div>
+
 </div>
 
 <footer>© 2026 Plate Service Portal (Private Facilitator)</footer>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<script>
+const step1=document.getElementById("step1");
+const step2=document.getElementById("step2");
+const step3=document.getElementById("step3");
+const thankyou=document.getElementById("thankyouPage");
+const progress=document.getElementById("progressBar");
 
-    // Firebase Config
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'plate-service-portal';
+document.getElementById("btnGoStep2").onclick=()=>{
+step1.style.display="none";
+step2.style.display="block";
+progress.style.width="66%";
+}
 
-    let currentUser = null;
+document.getElementById("btnGoStep3").onclick=()=>{
+step2.style.display="none";
+step3.style.display="block";
+progress.style.width="85%";
+}
 
-    // MANDATORY RULE 3: Auth Before Queries
-    const initAuth = async () => {
-        try {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        } catch (e) {
-            console.error("Auth initialization failed:", e);
-        }
-    };
-    initAuth();
+document.getElementById("btnSubmit").onclick=()=>{
+const id="PRV"+Math.floor(100000+Math.random()*900000);
+document.getElementById("bId").innerText=id;
+step3.style.display="none";
+thankyou.style.display="block";
+progress.style.width="100%";
+}
 
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-    });
+document.getElementById("btnReset").onclick=()=>location.reload();
 
-    window.showTrack = function() { 
-        document.getElementById('bookingBox').style.display='none'; 
-        document.getElementById('trackPage').style.display='block'; 
-    };
+document.getElementById("navTrack").onclick=()=>{
+document.getElementById("bookingBox").style.display="none";
+document.getElementById("trackPage").style.display="block";
+}
 
-    window.goStep2 = function() {
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-        document.getElementById('progressBar').style.width = '66%';
-        window.scrollTo(0, 0);
-    };
+document.getElementById("navNew").onclick=()=>location.reload();
 
-    window.goStep3 = function() {
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
-        document.getElementById('progressBar').style.width = '85%';
-        window.scrollTo(0, 0);
-    };
-
-    window.submitBooking = async function() {
-        // MANDATORY RULE 3: Guard Firestore operation
-        if (!currentUser) {
-            showError("Authentication in progress... Please wait.");
-            return;
-        }
-
-        const utrValue = document.getElementById('utr').value.trim();
-        const btn = document.getElementById('btnSubmit');
-        const statusMsg = document.getElementById('submitStatus');
-        const bookingId = "PRV" + Math.floor(100000 + Math.random() * 900000);
-
-        btn.disabled = true;
-        statusMsg.innerHTML = '<div class="loading-spinner"></div> Processing...';
-
-        try {
-            const data = {
-                id: bookingId,
-                utr: utrValue || "Not Provided",
-                regNo: document.getElementById('regNo').value.toUpperCase() || "N/A",
-                chassis: document.getElementById('chassis').value || "N/A",
-                engine: document.getElementById('engine').value || "N/A",
-                state: document.getElementById('stateSelect').value || "N/A",
-                name: document.getElementById('uName').value || "Guest",
-                mobile: document.getElementById('uMob').value || "N/A",
-                email: document.getElementById('uEmail').value || "N/A",
-                address: document.getElementById('uAddr').value || "N/A",
-                status: "Pending Verification",
-                timestamp: serverTimestamp(),
-                userId: currentUser.uid
-            };
-
-            // MANDATORY RULE 1: Strict Paths
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId);
-            await setDoc(docRef, data);
-            
-            document.getElementById('bId').innerText = bookingId;
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('thankyouPage').style.display = 'block';
-            document.getElementById('progressBar').style.width = '100%';
-            window.scrollTo(0, 0);
-
-        } catch (err) {
-            console.error("Submission Error:", err);
-            showError("Submission fail: " + err.message);
-            btn.disabled = false;
-            statusMsg.innerHTML = "";
-        }
-    };
-
-    window.trackStatus = async function() {
-        if (!currentUser) return;
-        const trackId = document.getElementById("trackId").value.trim().toUpperCase();
-        if(!trackId) return;
-        const resultDiv = document.getElementById("trackResult");
-        resultDiv.innerHTML = '<div class="loading-spinner"></div> Checking...';
-
-        try {
-            // MANDATORY RULE 1: Strict Paths
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'bookings', trackId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                resultDiv.innerHTML = `
-                    <div style="padding:15px; border:1px solid #0b3c6d; border-radius:8px; background:#f0f7ff;">
-                        <h3 style="color:#0b3c6d; margin:0;">Status: ${data.status}</h3>
-                        <p style="margin:10px 0 0 0;"><strong>Vehicle:</strong> ${data.regNo}</p>
-                        <p style="margin:5px 0 0 0;"><strong>Applicant:</strong> ${data.name}</p>
-                    </div>
-                `;
-            } else {
-                resultDiv.innerHTML = `<p style="color:red; text-align:center;">No application found with this ID.</p>`;
-            }
-        } catch (err) {
-            resultDiv.innerHTML = `<p style="color:red; text-align:center;">Error tracking status.</p>`;
-        }
-    };
-
-    function showError(msg) {
-        const errDiv = document.createElement('div');
-        errDiv.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#d32f2f; color:white; padding:15px 25px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2); font-size:14px; text-align:center;";
-        errDiv.innerText = msg;
-        document.body.appendChild(errDiv);
-        setTimeout(() => errDiv.remove(), 4000);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('navNew').addEventListener('click', () => window.location.reload());
-        document.getElementById('navTrack').addEventListener('click', window.showTrack);
-        document.getElementById('btnGoStep2').addEventListener('click', window.goStep2);
-        document.getElementById('btnGoStep3').addEventListener('click', window.goStep3);
-        document.getElementById('btnSubmit').addEventListener('click', window.submitBooking);
-        document.getElementById('btnReset').addEventListener('click', () => window.location.reload());
-        document.getElementById('btnTrack').addEventListener('click', window.trackStatus);
-    });
+document.getElementById("btnTrack").onclick=()=>{
+document.getElementById("trackResult").innerHTML="<p>No record found</p>";
+}
 </script>
+
 </body>
 </html>
