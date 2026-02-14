@@ -10,6 +10,7 @@
 --primary:#0b3c6d;
 --bg:#f2f6fb;
 --success:#28a745;
+--highlight:#ea4335;
 }
 
 body{
@@ -122,6 +123,19 @@ background:#fafafa;
 text-align:center
 }
 
+/* QR Container Centering */
+.qr-container{
+display:flex;
+justify-content:center;
+align-items:center;
+margin:15px 0;
+}
+.qr-container img{
+max-width:180px;
+width:100%;
+height:auto;
+}
+
 .upi-apps{
 display:flex;
 justify-content:center;
@@ -132,14 +146,14 @@ margin-top:10px
 .upi-apps img{width:45px}
 
 .file-input-wrapper{
-border:2px dashed #0b3c6d;
+border:2px dashed var(--primary);
 padding:15px;
 border-radius:10px;
 text-align:center;
 margin-top:15px;
 cursor:pointer;
 font-weight:bold;
-color:#0b3c6d;
+color:var(--primary);
 }
 
 #step2,#step3,#thankyouPage,#trackPage{display:none}
@@ -183,6 +197,7 @@ font-size:14px;
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
 nav button{font-size:14px;}
+.qr-container img{width:150px;}
 }
 </style>
 </head>
@@ -271,8 +286,8 @@ nav button{font-size:14px;}
 </select>
 
 <input id="regNo" placeholder="Vehicle Number">
-<input id="chassis" placeholder="Chassis Number (Last 5 digits)" maxlength="5">
-<input id="engine" placeholder="Engine Number (Last 5 digits)" maxlength="5">
+<input id="chassis" placeholder="Chassis Number Last 5 Digits" maxlength="5">
+<input id="engine" placeholder="Engine Number Last 5 Digits" maxlength="5">
 
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
@@ -297,10 +312,10 @@ nav button{font-size:14px;}
 <div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
-<h3>Scan QR Code & Make Payment</h3>
+<h3>Make Payment</h3>
 
 <div class="qr-container">
-<img src="qr.png">
+<img src="qr.png" alt="Payment QR">
 </div>
 
 <div class="upi-apps">
@@ -310,7 +325,7 @@ nav button{font-size:14px;}
 </div>
 
 <p style="margin-top:10px;font-size:15px;">
-Upload your payment screenshot below for verification
+Upload your payment screenshot below for verification.
 </p>
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
@@ -331,7 +346,7 @@ Upload Payment Screenshot
 <div class="success-check">✔</div>
 <h2 style="text-align:center;">Booking Successful</h2>
 <p style="text-align:center;">Application ID</p>
-<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed #61c861; "></h3>
+<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed var(--highlight); "></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
@@ -398,20 +413,14 @@ trackPage.style.display="block";
 
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
-let resDiv = document.getElementById('trackResult');
-
 if(orders[id]){
-resDiv.innerHTML=`<div class="info-list">
-<div class="info-item"><span>Status:</span><b>Pending Verification</b></div>
-<div class="info-item"><span>Owner:</span><b>${orders[id].owner} (Privacy Protocol)</b></div>
+trackResult.innerHTML=`<div class="info-list">
+<div class="info-item"><span>Status:</span><b>${orders[id].status}</b></div>
+<div class="info-item"><span>Vehicle:</span><b>${orders[id].vehicle}</b></div>
+<div class="info-item"><span>Owner:</span><b>${orders[id].owner}</b></div>
 </div>`;
-} else if(/^HSRP\d{6}$/.test(id)){
-resDiv.innerHTML=`<div class="info-list">
-<div class="info-item"><span>Status:</span><b>Pending Verification</b></div>
-<div class="info-item"><span>Owner:</span><b>(Privacy Protocol)</b></div>
-</div>`;
-} else {
-resDiv.innerHTML="<p style='color:red'>Application ID not found</p>";
+}else{
+trackResult.innerHTML="<p style='color:red'>Application ID not found</p>";
 }
 }
 </script>
