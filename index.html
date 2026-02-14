@@ -114,7 +114,7 @@ footer { text-align: center; padding: 30px 15px; background: #e9edf2; margin-top
 <div class="modal-overlay" id="valModal">
     <div class="modal">
         <h3>Required Information</h3>
-        <p id="modalMsg">Please fill in the required fields.</p>
+        <p id="modalMsg">Please fill in the required fields to continue.</p>
         <button onclick="document.getElementById('valModal').style.display='none'">Understand</button>
     </div>
 </div>
@@ -321,6 +321,7 @@ const validate = (ids) => {
     let missing = [];
     ids.forEach(id => {
         const el = document.getElementById(id);
+        if (!el) return;
         el.classList.remove('input-error');
         if(!el.value.trim()) {
             const fieldName = el.getAttribute('data-name') || id;
@@ -330,37 +331,43 @@ const validate = (ids) => {
     });
 
     if(missing.length > 0) {
-        document.getElementById('modalMsg').innerHTML = "Please fill the following required fields: <br>" + missing.join(", ");
+        document.getElementById('modalMsg').innerHTML = "Please provide the following required information to continue: <br><br>" + missing.join(", ");
         document.getElementById('valModal').style.display = 'flex';
         return false;
     }
     return true;
 };
 
-// Button actions
-document.getElementById('btnGoStep2').onclick = () => {
-    if(validate(['vehicleType', 'stateSelect', 'regNo', 'chassis', 'engine'])) {
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-        document.getElementById('progressBar').style.width = '66%';
-        window.scrollTo(0,0);
-    }
-};
+// Simplified and robust navigation listeners
+window.addEventListener('load', () => {
+    // Step 1 -> Step 2
+    document.getElementById('btnGoStep2').addEventListener('click', () => {
+        if(validate(['vehicleType', 'stateSelect', 'regNo', 'chassis', 'engine'])) {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('progressBar').style.width = '66%';
+            window.scrollTo(0, 0);
+        }
+    });
 
-document.getElementById('btnGoStep3').onclick = () => {
-    if(validate(['uName', 'uMob', 'uEmail', 'uAddr'])) {
+    // Step 2 -> Step 3
+    document.getElementById('btnGoStep3').addEventListener('click', () => {
+        if(validate(['uName', 'uMob', 'uEmail', 'uAddr'])) {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+            document.getElementById('progressBar').style.width = '100%';
+            window.scrollTo(0, 0);
+        }
+    });
+
+    // Back Navigation
+    document.getElementById('btnStep2Back').addEventListener('click', () => {
         document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
-        document.getElementById('progressBar').style.width = '100%';
-        window.scrollTo(0,0);
-    }
-};
-
-document.getElementById('btnStep2Back').onclick = () => {
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('progressBar').style.width = '33%';
-};
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('progressBar').style.width = '33%';
+        window.scrollTo(0, 0);
+    });
+});
 
 document.getElementById('screenshot').onchange = (e) => {
     const file = e.target.files[0];
@@ -381,22 +388,17 @@ document.getElementById('btnSubmit').onclick = async () => {
     const btn = document.getElementById('btnSubmit');
     const statusDiv = document.getElementById('submitStatus');
     
-    // UI update
     btn.disabled = true;
     statusDiv.innerHTML = '<div class="loading-spinner"></div> Submitting...';
     
     try {
-        // Ensure auth is ready
-        if (!auth.currentUser) {
-            await initAuth();
-        }
+        if (!auth.currentUser) await initAuth();
         
         const orderId = "HSRP" + Math.floor(100000 + Math.random() * 900000);
         const registration = document.getElementById('regNo').value.toUpperCase();
         const ownerName = document.getElementById('uName').value;
         const today = new Date().toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'});
         
-        // Prepare data
         const bookingData = {
             orderId: orderId,
             vehicle: registration,
@@ -410,23 +412,19 @@ document.getElementById('btnSubmit').onclick = async () => {
             createdAt: serverTimestamp()
         };
 
-        // Save to Firestore
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), bookingData);
         
-        // Populate Thank You Page
         document.getElementById('displayReg').innerText = registration;
         document.getElementById('displayOwner').innerText = ownerName;
         document.getElementById('displayDate').innerText = today;
         document.getElementById('finalId').innerText = orderId;
         
-        // Hide form and show success
         document.getElementById('bookingBox').style.display = 'none';
         document.getElementById('thankyouPage').style.display = 'block';
         window.scrollTo(0,0);
         
     } catch (error) {
-        console.error("Firestore Error:", error);
-        statusDiv.innerHTML = `<span style="color:var(--error);">Error saving data. Please check connection.</span>`;
+        statusDiv.innerHTML = `<span style="color:var(--error);">Error: Connection failed.</span>`;
         btn.disabled = false;
     }
 };
@@ -446,7 +444,7 @@ document.getElementById('btnTrack').onclick = async () => {
                 Owner: ${snap.data().owner}
             </div>`;
         } else { 
-            res.innerHTML = "<div style='color:red; margin-top:10px; font-size:14px;'>ID not found. Please verify.</div>"; 
+            res.innerHTML = "<div style='color:red; margin-top:10px; font-size:14px;'>ID not found.</div>"; 
         }
     } catch(e) { 
         res.innerHTML = "Connection error."; 
