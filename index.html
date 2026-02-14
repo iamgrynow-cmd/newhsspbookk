@@ -149,7 +149,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // Firebase Config
@@ -159,8 +159,25 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'plate-service-portal';
 
-    // Auth logic
-    signInAnonymously(auth).catch(e => console.error("Auth failed:", e));
+    let currentUser = null;
+
+    // MANDATORY RULE 3: Auth Before Queries
+    const initAuth = async () => {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) {
+            console.error("Auth initialization failed:", e);
+        }
+    };
+    initAuth();
+
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+    });
 
     window.showTrack = function() { 
         document.getElementById('bookingBox').style.display='none'; 
@@ -168,7 +185,6 @@
     };
 
     window.goStep2 = function() {
-        // Validation hata di gayi hai
         document.getElementById('step1').style.display = 'none';
         document.getElementById('step2').style.display = 'block';
         document.getElementById('progressBar').style.width = '66%';
@@ -176,7 +192,6 @@
     };
 
     window.goStep3 = function() {
-        // Validation hata di gayi hai
         document.getElementById('step2').style.display = 'none';
         document.getElementById('step3').style.display = 'block';
         document.getElementById('progressBar').style.width = '85%';
@@ -184,9 +199,13 @@
     };
 
     window.submitBooking = async function() {
+        // MANDATORY RULE 3: Guard Firestore operation
+        if (!currentUser) {
+            showError("Authentication in progress... Please wait.");
+            return;
+        }
+
         const utrValue = document.getElementById('utr').value.trim();
-        // Payment ki validation bhi mandatory nahi hai ab
-        
         const btn = document.getElementById('btnSubmit');
         const statusMsg = document.getElementById('submitStatus');
         const bookingId = "PRV" + Math.floor(100000 + Math.random() * 900000);
@@ -207,10 +226,13 @@
                 email: document.getElementById('uEmail').value || "N/A",
                 address: document.getElementById('uAddr').value || "N/A",
                 status: "Pending Verification",
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                userId: currentUser.uid
             };
 
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId), data);
+            // MANDATORY RULE 1: Strict Paths
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'bookings', bookingId);
+            await setDoc(docRef, data);
             
             document.getElementById('bId').innerText = bookingId;
             document.getElementById('step3').style.display = 'none';
@@ -220,19 +242,21 @@
 
         } catch (err) {
             console.error("Submission Error:", err);
-            showError("Technical error! Please try again.");
+            showError("Submission fail: " + err.message);
             btn.disabled = false;
             statusMsg.innerHTML = "";
         }
     };
 
     window.trackStatus = async function() {
+        if (!currentUser) return;
         const trackId = document.getElementById("trackId").value.trim().toUpperCase();
         if(!trackId) return;
         const resultDiv = document.getElementById("trackResult");
         resultDiv.innerHTML = '<div class="loading-spinner"></div> Checking...';
 
         try {
+            // MANDATORY RULE 1: Strict Paths
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'bookings', trackId);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
@@ -254,13 +278,12 @@
 
     function showError(msg) {
         const errDiv = document.createElement('div');
-        errDiv.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#d32f2f; color:white; padding:15px 25px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+        errDiv.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#d32f2f; color:white; padding:15px 25px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2); font-size:14px; text-align:center;";
         errDiv.innerText = msg;
         document.body.appendChild(errDiv);
-        setTimeout(() => errDiv.remove(), 3000);
+        setTimeout(() => errDiv.remove(), 4000);
     }
 
-    // Event Listeners setup
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('navNew').addEventListener('click', () => window.location.reload());
         document.getElementById('navTrack').addEventListener('click', window.showTrack);
