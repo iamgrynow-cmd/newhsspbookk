@@ -10,7 +10,6 @@
 --primary:#0b3c6d;
 --bg:#f2f6fb;
 --success:#28a745;
---delivery:#ea4335;
 }
 
 body{
@@ -36,7 +35,7 @@ header img{height:40px}
 nav{
 background:#003366;
 display:flex;
-justify-content:center;
+justify-content:center
 }
 
 nav button{
@@ -46,7 +45,7 @@ border:none;
 padding:12px 18px;
 font-weight:bold;
 font-size:15px;
-cursor:pointer;
+cursor:pointer
 }
 
 .container{
@@ -55,12 +54,12 @@ margin:15px auto;
 background:#fff;
 padding:20px;
 border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
+box-shadow:0 5px 15px rgba(0,0,0,.1)
 }
 
 .step-title{
 background:#e3ecff;
-padding:10px;
+padding:12px;
 margin-bottom:15px;
 border-left:5px solid var(--primary);
 font-weight:bold;
@@ -69,7 +68,7 @@ font-weight:bold;
 .form-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:12px
 }
 
 @media(max-width:600px){
@@ -77,14 +76,14 @@ gap:10px;
 body{font-size:17px}
 }
 
-label{font-weight:bold;font-size:14px}
+label{font-weight:bold;font-size:15px}
 
 input,select,textarea{
 width:100%;
-padding:10px;
-border-radius:6px;
+padding:12px;
+border-radius:8px;
 border:1px solid #ccc;
-font-size:15px;
+font-size:16px;
 }
 
 textarea{min-height:80px}
@@ -93,49 +92,41 @@ textarea{min-height:80px}
 background:var(--primary);
 color:#fff;
 border:none;
-padding:14px;
-border-radius:8px;
+padding:15px;
+border-radius:10px;
 width:100%;
-margin-top:10px;
-font-size:16px;
-cursor:pointer;
+margin-top:12px;
+font-size:17px;
+cursor:pointer
 }
 
 .progress{
 height:8px;
 background:#ddd;
 border-radius:10px;
-margin-bottom:15px;
+margin-bottom:15px
 }
 
 .progress-bar{
 height:100%;
 width:33%;
 background:linear-gradient(90deg,#0b3c6d,#1a5ea3);
-transition:width .3s;
-border-radius:10px;
+transition:width .3s
 }
 
 .payment-card{
 border:1px solid #ddd;
-padding:15px;
+padding:18px;
 border-radius:12px;
 background:#fafafa;
-text-align:center;
-}
-
-.qr-container img{
-width:160px;
-margin:10px 0;
-border-radius:8px;
-border:1px solid #ccc;
+text-align:center
 }
 
 .upi-apps{
 display:flex;
 justify-content:center;
 gap:15px;
-margin-top:10px;
+margin-top:10px
 }
 
 .upi-apps img{width:45px}
@@ -145,7 +136,7 @@ border:2px dashed #0b3c6d;
 padding:15px;
 border-radius:10px;
 text-align:center;
-margin-top:10px;
+margin-top:15px;
 cursor:pointer;
 font-weight:bold;
 color:#0b3c6d;
@@ -154,7 +145,7 @@ color:#0b3c6d;
 #step2,#step3,#thankyouPage,#trackPage{display:none}
 
 .success-check{
-font-size:60px;
+font-size:70px;
 color:var(--success);
 text-align:center;
 }
@@ -162,15 +153,15 @@ text-align:center;
 .info-list{
 text-align:left;
 background:#f9f9f9;
-padding:10px;
-border-radius:8px;
+padding:12px;
+border-radius:10px;
 margin-top:10px;
 }
 
 .info-item{
 display:flex;
 justify-content:space-between;
-margin-bottom:5px;
+margin-bottom:6px;
 border-bottom:1px solid #eee;
 padding:5px 0;
 }
@@ -180,7 +171,6 @@ background:#eafff1;
 padding:20px;
 border-radius:15px;
 box-shadow:0 0 10px rgba(0,0,0,.1);
-text-align:center;
 }
 
 footer{
@@ -192,12 +182,10 @@ font-size:14px;
 
 @media(max-width:600px){
 .container{margin:10px;padding:15px;}
-nav button{font-size:13px;}
-.qr-container img{width:140px;}
+nav button{font-size:14px;}
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -222,6 +210,9 @@ nav button{font-size:13px;}
 <button class="btn-next" onclick="trackOrder()">Check Status</button>
 <div id="trackResult" style="margin-top:15px;"></div>
 </div>
+
+<div id="bookingBox">
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
 <!-- STEP 1 -->
 <div id="step1">
@@ -278,9 +269,9 @@ nav button{font-size:13px;}
 <option>Puducherry</option>
 </select>
 
-<input id="regNo" placeholder="Vehicle Registration Number">
-<input id="chassis" placeholder="Chassis Number" maxlength="5">
-<input id="engine" placeholder="Engine Number" maxlength="5">
+<input id="regNo" placeholder="Vehicle Number">
+<input id="chassis" placeholder="Chassis Number (Last 5 Digits)" maxlength="5">
+<input id="engine" placeholder="Engine Number (Last 5 Digits)" maxlength="5">
 
 </div>
 <button class="btn-next" onclick="goStep2()">Continue</button>
@@ -295,20 +286,19 @@ nav button{font-size:13px;}
 <input id="uEmail" placeholder="Email">
 <textarea id="uAddr" placeholder="Complete Address" style="grid-column:1/-1"></textarea>
 </div>
-
 <button class="btn-next" onclick="goStep3()">Proceed to Payment</button>
 <button class="btn-next" style="background:#666" onclick="backStep1()">Back</button>
 </div>
 
 <!-- STEP 3 -->
 <div id="step3">
-<div class="step-title">Step 3: Secure Payment</div>
+<div class="step-title">Secure Payment</div>
 
 <div class="payment-card">
 <h3>Scan & Pay with any UPI app</h3>
 
 <div class="qr-container">
-<img id="qrPreview" src="qr.png" alt="QR Code">
+<img id="qrImage" src="qr.png" alt="QR Code" width="180">
 </div>
 
 <div class="upi-apps">
@@ -323,7 +313,7 @@ After payment, upload your payment screenshot below for verification.
 
 <div class="file-input-wrapper" onclick="document.getElementById('screenshot').click()">
 Upload Payment Screenshot
-<input type="file" id="screenshot" accept="image/*" hidden>
+<input type="file" id="screenshot" hidden>
 </div>
 
 </div>
@@ -331,24 +321,26 @@ Upload Payment Screenshot
 <button class="btn-next" onclick="submitForm()">Complete Submission</button>
 </div>
 
+</div>
+
 <!-- THANK YOU -->
 <div id="thankyouPage">
 <div class="thankyou-box">
 <div class="success-check">✔</div>
-<h2>Booking Successful</h2>
-<p>Application ID</p>
-<h3 id="finalId" style="background:#e8f7e8;color:#0b3c6d;padding:10px;border-radius:10px;border:2px dashed #ea4335;"></h3>
+<h2 style="text-align:center;">Booking Successful</h2>
+<p style="text-align:center;">Application ID</p>
+<h3 id="finalId" style=" text-align:center; background:#e8f7e8; color:#0b3c6d; padding:10px; border-radius:10px; font-size:20px; border:2px dashed #ea4335; font-weight:bold;"></h3>
 
 <div class="info-list">
 <div class="info-item"><span>Owner (Privacy Protocol):</span><b id="displayOwner"></b></div>
-<div class="info-item"><span>Vehicle:</span><b id="displayReg"></b></div>
+<div class="info-item"><span>Vehicle Number:</span><b id="displayReg"></b></div>
 <div class="info-item"><span>Date:</span><b id="displayDate"></b></div>
 </div>
 
-<h4>Process Timeline</h4>
+<h4 style="margin-top:15px;">Process Timeline</h4>
 <p>✔ Details Verification (24 hrs)</p>
 <p>✔ Plate Manufacturing</p>
-<p style="background:#fde5e5;padding:10px;border-radius:10px;font-weight:bold;color:#ea4335;border-left:5px solid #ea4335;">✔ Delivery within 8–10 working days</p>
+<p style=" background:#ffe6e6; padding:10px; border-radius:10px; font-weight:bold; color:#ea4335; border-left:5px solid #ea4335;">✔ Delivery within 8–10 working days</p>
 
 <button class="btn-next" onclick="location.reload()">Book Another</button>
 </div>
@@ -361,39 +353,61 @@ Upload Payment Screenshot
 <script>
 let orders={};
 
-function goStep2(){step1.style.display="none";step2.style.display="block";progressBar.style.width="66%";}
-function goStep3(){step2.style.display="none";step3.style.display="block";progressBar.style.width="100%";}
-function backStep1(){step2.style.display="none";step1.style.display="block";progressBar.style.width="33%";}
+function goStep2(){
+step1.style.display="none";
+step2.style.display="block";
+progressBar.style.width="66%";
+}
 
-const screenshotInput=document.getElementById("screenshot");
-screenshotInput.onchange=()=>{document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔";};
+function goStep3(){
+step2.style.display="none";
+step3.style.display="block";
+progressBar.style.width="100%";
+refreshQR();
+}
+
+function backStep1(){
+step2.style.display="none";
+step1.style.display="block";
+progressBar.style.width="33%";
+}
+
+function refreshQR() {
+  const qr = document.getElementById("qrImage");
+  qr.src = "qr.png?ts=" + new Date().getTime();
+}
+
+document.getElementById("screenshot").onchange = () => {
+document.querySelector(".file-input-wrapper").innerHTML="Screenshot Uploaded ✔";
+};
 
 function submitForm(){
 let id="HSRP"+Math.floor(100000+Math.random()*900000);
-orders[id]={status:"Pending",vehicle:regNo.value,owner:uName.value};
+orders[id]={status:"Pending Verification",vehicle:regNo.value,owner:uName.value};
+
 finalId.innerText=id;
 displayReg.innerText=regNo.value;
 displayOwner.innerText=uName.value;
 displayDate.innerText=new Date().toDateString();
-step1.style.display="none";step2.style.display="none";step3.style.display="none";
-document.getElementById('thankyouPage').style.display="block";
+
+bookingBox.style.display="none";
+thankyouPage.style.display="block";
 }
 
-// Track Status
 function showTrack(){
-step1.style.display="none";step2.style.display="none";step3.style.display="none";
-document.getElementById('thankyouPage').style.display="none";
-document.getElementById('trackPage').style.display="block";
+bookingBox.style.display="none";
+thankyouPage.style.display="none";
+trackPage.style.display="block";
 }
 
 function trackOrder(){
 let id=document.getElementById("trackId").value.toUpperCase();
-if(!id.match(/^HSRP\d{6}$/)){ id="HSRP"+Math.floor(100000+Math.random()*900000);}
-let randomOwner="Privacy Protocol";
+if(!id.startsWith("HSRP")) id="HSRP"+Math.floor(100000+Math.random()*900000);
+
 trackResult.innerHTML=`<div class="info-list">
 <div class="info-item"><span>Status:</span><b>Pending</b></div>
 <div class="info-item"><span>Application ID:</span><b>${id}</b></div>
-<div class="info-item"><span>Owner:</span><b>${randomOwner}</b></div>
+<div class="info-item"><span>Owner (Privacy Protocol):</span><b>Confidential</b></div>
 </div>`;
 }
 </script>
